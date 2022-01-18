@@ -3,33 +3,33 @@
 ## ディレクトリ構成
 
 ```
- .
-├──  assignment  ... 課題の統合取得処理
-│  ├──  concurrency_test.go ... 並行処理のテスト
-│  ├──  fetch.go            ... 課題取得処理; clients/{gakujo,edstem,teams} モジュールを呼び出す形になるはず
-│  ├──  fetch_test.go       ... 課題取得処理の動作確認用
-│  └──  model.go            ... 課題の共通モデル
-├──  cmd         ... コマンドの定義
-│  ├──  list.go
-│  ├──  login.go
-│  └──  root.go
-├──  cred        ... 認証情報; credentialの略
-│  └──  credential.go
-├──  clients     ... 通信処理を行うクライアント
-│  ├──  edstem
-│  │  ├──  login.go
-│  │  └──  model.go
-│  ├──  gakujo
-│  │  ├──  login.go
-│  │  └──  model.go
-│  └──  teams
-│     ├──  login.go
-│     └──  model.go
-├──  env.sample
-├──  .env
-├──  go.mod
-├──  go.sum
-└──  main.go
+./
+├─ assignment/    ... 課題の統合取得処理
+│  ├── concurrency_test.go ... 並行処理のテスト
+│  ├── fetch.go            ... 課題取得処理; clients/{gakujo,edstem,teams} モジュールを呼び出す形になるはず
+│  ├── fetch_test.go       ... 課題取得処理の動作確認用
+│  └── model.go            ... 課題の共通モデル
+├─ cmd/            ... コマンドの定義
+│  ├── list.go
+│  ├── login.go
+│  └── root.go
+├─ cred/        ... 認証情報; credentialの略
+│  └── credential.go
+├─ clients/     ... 通信処理を行うクライアント
+│  ├─ edstem/
+│  │  ├── login.go
+│  │  └── model.go
+│  ├─ gakujo/
+│  │  ├── login.go
+│  │  └── model.go
+│  └─ teams/
+│     ├── login.go
+│     └── model.go
+├── env.sample
+├── .env
+├── go.mod
+├── go.sum
+└── main.go
 ```
 
 
