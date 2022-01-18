@@ -1,6 +1,7 @@
 package cred
 
 import (
+	"fmt"
 	"os"
 )
 
@@ -37,8 +38,39 @@ func LoadFromEnv() *Credential {
 			Email:    os.Getenv("EDSTEM_EMAIL"),
 			Password: os.Getenv("EDSTEM_PASSWORD"),
 		},
-		Teams:  Teams{
+		Teams: Teams{
 			Token: os.Getenv("TEAMS_TOKEN"),
 		},
 	}
+}
+
+type ErrEmpty struct {
+	FieldName string
+}
+
+func (e *ErrEmpty) Error() string {
+	return fmt.Sprintf("%s is empty", e.FieldName)
+}
+
+func newErrEmpty(fieldName string) ErrEmpty {
+	return ErrEmpty{
+		FieldName: fieldName,
+	}
+}
+
+func (c *Credential) CheckEmptyField() []ErrEmpty {
+	errs := make([]ErrEmpty, 0)
+	if c.Gakujo.Username == "" {
+		errs = append(errs, newErrEmpty("Gakujo.Username"))
+	}
+	if c.Gakujo.Password == "" {
+		errs = append(errs, newErrEmpty("Gakujo.Username"))
+	}
+	if c.EdStem.Email == "" {
+		errs = append(errs, newErrEmpty("EdStem.Email"))
+	}
+	if c.EdStem.Password == "" {
+		errs = append(errs, newErrEmpty("EdStem.Password"))
+	}
+	return errs
 }
