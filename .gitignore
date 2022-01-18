@@ -1,6 +1,7 @@
 ### Original ignore list
 bin/
 build/
+/tmp/
 *.env
 
 
