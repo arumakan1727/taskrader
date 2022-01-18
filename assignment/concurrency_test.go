@@ -9,16 +9,14 @@ import (
 	"github.com/arumakan1727/taskrader/cred"
 )
 
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
-
 // 並行処理ができているか確かめるだけ (通信は行わない)
 func TestConcurrency(t *testing.T) {
+	rand.Seed(time.Now().UnixNano())
+
 	ass, errs := fetchAllConcurrency(&cred.Credential{}, dummyFetchGakujo, dummyFetchEdStem, dummyFetchTeams)
 
-	fmt.Printf("[TestConcurrency] errs: %v\n", errs)
-	fmt.Printf("[TestConcurrency] assignments:\n")
+	fmt.Printf(" TestConcurrency(): errs: %v\n", errs)
+	fmt.Printf(" TestConcurrency(): assignments:\n")
 	for _, a := range ass {
 		fmt.Printf("    %s\n", a)
 	}
