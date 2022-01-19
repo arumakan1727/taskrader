@@ -3,6 +3,7 @@ package assignment
 import (
 	"fmt"
 
+	"github.com/arumakan1727/taskrader/clients/gakujo"
 	"github.com/arumakan1727/taskrader/cred"
 )
 
@@ -48,11 +49,26 @@ func fetchAllConcurrency(
 }
 
 func fetchGakujo(cred *cred.Gakujo, resultChan chan []*Assignment, errChan chan *Error) {
-	resultChan <- nil
-	errChan <- &Error{
-		Origin: OrigGakujo,
-		Err:    fmt.Errorf("assignment.fetchGakujo が未実装です"),
+
+	client := gakujo.NewClient()
+
+	err := client.Login(cred.Username, cred.Password)
+
+	if err != nil {
+
+		resultChan <- nil
+		errChan <- &Error{
+			Origin: OrigGakujo,
+			Err:    err,
+		}
+		return
+
 	}
+
+	result := client.getTask()
+
+	resultChan <- result
+	errChan <- nil
 }
 
 func fetchEdStem(cred *cred.EdStem, resultChan chan []*Assignment, errChan chan *Error) {
