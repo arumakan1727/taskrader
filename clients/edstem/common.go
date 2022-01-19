@@ -13,6 +13,8 @@ func (c *Client) GetJson(method, url string) ([]byte, error) {
 		return nil, err
 	}
 
+	defer resp.Body.Close()
+
 	res, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err

@@ -2,12 +2,12 @@ package edstem
 
 import "time"
 
-var (
+const (
 	ErQuize    string = `{"code":"unknown","message":"Not a quiz slide"}`
 	ErNotfound string = `{"code":"unknown","message":"Not Found"}`
 )
 
-type JsonClient struct {
+type Auth struct {
 	Email    string `json:"login"`
 	Password string `json:"password"`
 }

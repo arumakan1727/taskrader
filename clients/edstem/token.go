@@ -9,7 +9,7 @@ import (
 )
 
 func (c *Client) getToken(email, password string) (string, error) {
-	jsonclient := JsonClient{Email: email, Password: password}
+	jsonclient := Auth{Email: email, Password: password}
 
 	jsonjson, _ := json.Marshal(jsonclient)
 

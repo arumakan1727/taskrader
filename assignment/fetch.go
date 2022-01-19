@@ -64,6 +64,7 @@ func fetchEdStem(cred *cred.EdStem, resultChan chan []*Assignment, errChan chan 
 			Origin: OrigEdStem,
 			Err:    err,
 		}
+		resultChan <- nil
 		return
 	}
 	announcement, err := client.JsonParse()
@@ -72,6 +73,8 @@ func fetchEdStem(cred *cred.EdStem, resultChan chan []*Assignment, errChan chan 
 			Origin: OrigEdStem,
 			Err:    err,
 		}
+		resultChan <- nil
+		return
 	}
 	result := []*Assignment{}
 	for _, ano := range announcement {
