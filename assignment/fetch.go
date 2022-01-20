@@ -65,8 +65,7 @@ func fetchGakujo(cred *cred.Gakujo, resultChan chan []*Assignment, errChan chan 
 
 	}
 
-	announcement, err := client.GetTask()
-
+	tasks, err := client.GetTask()
 	if err != nil {
 
 		resultChan <- nil
@@ -80,11 +79,11 @@ func fetchGakujo(cred *cred.Gakujo, resultChan chan []*Assignment, errChan chan 
 
 	result := []*Assignment{}
 
-	for _, elem := range announcement {
+	for _, elem := range tasks {
 		task := Assignment{
 			Origin:   OrigGakujo,
-			Title:    elem.Type,
-			Course:   elem.Title,
+			Title:    elem.Title,
+			Course:   elem.Course,
 			Deadline: elem.Deadline,
 		}
 		result = append(result, &task)
