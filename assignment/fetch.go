@@ -65,7 +65,18 @@ func fetchGakujo(cred *cred.Gakujo, resultChan chan []*Assignment, errChan chan 
 
 	}
 
-	announcement := client.GetTask()
+	announcement, err := client.GetTask()
+
+	if err != nil {
+
+		resultChan <- nil
+		errChan <- &Error{
+			Origin: OrigGakujo,
+			Err:    err,
+		}
+		return
+
+	}
 
 	result := []*Assignment{}
 
