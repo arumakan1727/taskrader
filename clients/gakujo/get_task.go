@@ -5,11 +5,14 @@ import (
 	"errors"
 	"io"
 	"net/url"
+	"regexp"
 	"strings"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
+
+var kadaiInfoRegex regexp.Regexp = *regexp.MustCompile(`^(\[未提出\])?\s*(.*) (.+)（.*クラス）\s*(前|後)期\s*$`)
 
 func (c *Client) GetTask() ([]TaskRow, error) {
 
@@ -53,10 +56,18 @@ func (c *Client) GetTask() ([]TaskRow, error) {
 				return false
 			}
 		}
+
+		text := selection.Find("td:nth-child(3) > a").Text()
 		data := TaskRow{
 			Type:     taskType,
 			Deadline: deadline,
-			Name:     selection.Find("td:nth-child(3) > a").Text(),
+			Title:    text,
+			Course:   "",
+		}
+		matches := kadaiInfoRegex.FindStringSubmatch(text)
+		if len(matches) > 0 {
+			data.Title = matches[2]
+			data.Course = matches[3]
 		}
 		taskRows = append(taskRows, data)
 		return true

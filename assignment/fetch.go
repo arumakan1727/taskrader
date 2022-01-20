@@ -2,8 +2,8 @@ package assignment
 
 import (
 	"fmt"
-	"github.com/arumakan1727/taskrader/clients/gakujo"
 	"github.com/arumakan1727/taskrader/clients/edstem"
+	"github.com/arumakan1727/taskrader/clients/gakujo"
 	"github.com/arumakan1727/taskrader/cred"
 )
 
@@ -84,7 +84,7 @@ func fetchGakujo(cred *cred.Gakujo, resultChan chan []*Assignment, errChan chan 
 		task := Assignment{
 			Origin:   OrigGakujo,
 			Title:    elem.Type,
-			Course:   elem.Name,
+			Course:   elem.Title,
 			Deadline: elem.Deadline,
 		}
 		result = append(result, &task)
