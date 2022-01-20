@@ -2,8 +2,8 @@ package assignment
 
 import (
 	"fmt"
-
 	"github.com/arumakan1727/taskrader/clients/gakujo"
+	"github.com/arumakan1727/taskrader/clients/edstem"
 	"github.com/arumakan1727/taskrader/cred"
 )
 
@@ -95,11 +95,37 @@ func fetchGakujo(cred *cred.Gakujo, resultChan chan []*Assignment, errChan chan 
 }
 
 func fetchEdStem(cred *cred.EdStem, resultChan chan []*Assignment, errChan chan *Error) {
-	resultChan <- nil
-	errChan <- &Error{
-		Origin: OrigEdStem,
-		Err:    fmt.Errorf("assignment.fetchEdStem が未実装です"),
+	client := edstem.NewClient()
+	err := client.Login(cred.Email, cred.Password)
+	if err != nil {
+		errChan <- &Error{
+			Origin: OrigEdStem,
+			Err:    err,
+		}
+		resultChan <- nil
+		return
 	}
+	announcement, err := client.JsonParse()
+	if err != nil {
+		errChan <- &Error{
+			Origin: OrigEdStem,
+			Err:    err,
+		}
+		resultChan <- nil
+		return
+	}
+	result := []*Assignment{}
+	for _, ano := range announcement {
+		anounce := Assignment{
+			Origin:   OrigEdStem,
+			Title:    ano.Title,
+			Course:   ano.SubjectName,
+			Deadline: UnknownDeadline(),
+		}
+		result = append(result, &anounce)
+	}
+	resultChan <- result
+	errChan <- nil
 }
 
 func fetchTeams(cred *cred.Teams, resultChan chan []*Assignment, errChan chan *Error) {
