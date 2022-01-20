@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"io"
-	"log"
 	"net/url"
 	"strings"
 	"time"
@@ -12,7 +11,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func (c *Client) getTask() []TaskRow {
+func (c *Client) GetTask() ([]TaskRow, error) {
 
 	datas := make(url.Values)
 	datas.Set("headTitle", "ホーム")
@@ -24,19 +23,19 @@ func (c *Client) getTask() []TaskRow {
 	resp, err := c.getPage(urll, datas)
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	body, err := io.ReadAll(resp)
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	doc, err := goquery.NewDocumentFromReader(io.NopCloser(bytes.NewBuffer(body)))
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	var taskRows []TaskRow
@@ -63,7 +62,7 @@ func (c *Client) getTask() []TaskRow {
 		return true
 	})
 
-	return taskRows
+	return taskRows, nil
 }
 
 func Parse2400(layout, value string) (time.Time, error) {
