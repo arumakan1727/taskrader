@@ -1,9 +1,12 @@
 package assignment
 
 import (
-	"fmt"
+	"io"
+	"log"
+
 	"github.com/arumakan1727/taskrader/clients/edstem"
 	"github.com/arumakan1727/taskrader/clients/gakujo"
+	"github.com/arumakan1727/taskrader/clients/teams"
 	"github.com/arumakan1727/taskrader/cred"
 )
 
@@ -48,6 +51,13 @@ func fetchAllConcurrency(
 	return assignments, errs
 }
 
+func newErr(origin Origin, err error) *Error {
+	return &Error{
+		Origin: origin,
+		Err:    err,
+	}
+}
+
 func fetchGakujo(cred *cred.Gakujo, resultChan chan []*Assignment, errChan chan *Error) {
 
 	client := gakujo.NewClient()
@@ -57,10 +67,7 @@ func fetchGakujo(cred *cred.Gakujo, resultChan chan []*Assignment, errChan chan 
 	if err != nil {
 
 		resultChan <- nil
-		errChan <- &Error{
-			Origin: OrigGakujo,
-			Err:    err,
-		}
+		errChan <- newErr(OrigGakujo, err)
 		return
 
 	}
@@ -69,10 +76,7 @@ func fetchGakujo(cred *cred.Gakujo, resultChan chan []*Assignment, errChan chan 
 	if err != nil {
 
 		resultChan <- nil
-		errChan <- &Error{
-			Origin: OrigGakujo,
-			Err:    err,
-		}
+		errChan <- newErr(OrigGakujo, err)
 		return
 
 	}
@@ -97,19 +101,13 @@ func fetchEdStem(cred *cred.EdStem, resultChan chan []*Assignment, errChan chan 
 	client := edstem.NewClient()
 	err := client.Login(cred.Email, cred.Password)
 	if err != nil {
-		errChan <- &Error{
-			Origin: OrigEdStem,
-			Err:    err,
-		}
+		errChan <- newErr(OrigEdStem, err)
 		resultChan <- nil
 		return
 	}
 	announcement, err := client.JsonParse()
 	if err != nil {
-		errChan <- &Error{
-			Origin: OrigEdStem,
-			Err:    err,
-		}
+		errChan <- newErr(OrigEdStem, err)
 		resultChan <- nil
 		return
 	}
