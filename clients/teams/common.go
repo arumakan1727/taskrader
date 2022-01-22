@@ -1,6 +1,7 @@
 package teams
 
 import (
+	"os"
 	"path"
 
 	"github.com/arumakan1727/taskrader/config"
@@ -19,6 +20,17 @@ func ChromeTmpUserDataDir() (string, error) {
 		return "", err
 	}
 	return path.Join(cacheDir, "chrome-tmp-profile"), nil
+}
+
+func ClearCookies() {
+	dir, err := ChromeTmpUserDataDir()
+	if err != nil {
+		return
+	}
+	os.Remove(path.Join(dir, "Default", "Cookies"))
+	os.Remove(path.Join(dir, "Default", "Cookies-journal"))
+	os.RemoveAll(path.Join(dir, "Default", "Sessions"))
+	os.RemoveAll(path.Join(dir, "Default", "Session Storage"))
 }
 
 func myChromeOptions() (agouti.Option, error) {
