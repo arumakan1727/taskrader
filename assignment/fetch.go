@@ -126,9 +126,26 @@ func fetchEdStem(cred *cred.EdStem, resultChan chan []*Assignment, errChan chan 
 }
 
 func fetchTeams(cred *cred.Teams, resultChan chan []*Assignment, errChan chan *Error) {
-	resultChan <- nil
-	errChan <- &Error{
-		Origin: OrigTeams,
-		Err:    fmt.Errorf("assignment.fetchTeams が未実装です"),
+	ass, err := teams.FetchAssignments(log.New(io.Discard, "", 0))
+	if err != nil {
+		resultChan <- nil
+		errChan <- newErr(OrigTeams, err)
 	}
+
+	result := make([]*Assignment, 0, len(ass))
+	for _, a := range ass {
+		deadline := a.Deadline
+		if deadline.IsZero() {
+			deadline = UnknownDeadline()
+		}
+		result = append(result, &Assignment{
+			Origin:   OrigTeams,
+			Title:    a.Title,
+			Course:   a.Course,
+			Deadline: deadline,
+		})
+	}
+
+	resultChan <- result
+	errChan <- nil
 }
