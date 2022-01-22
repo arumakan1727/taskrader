@@ -32,10 +32,10 @@ func UnknownDeadline() time.Time {
 func (a *Assignment) String() string {
 	deadline := "不明"
 	if a.Deadline != UnknownDeadline() {
-		deadline = a.Deadline.Format("2006-01-02 15:04")
+		deadline = a.Deadline.String()
 	}
 
-	return fmt.Sprintf("[%s] %s (%s) %s", a.Origin, a.Title, a.Course, deadline)
+	return fmt.Sprintf("Assignment{Origin=%s, Title=%q, Course=%q, deadline=%q}", a.Origin, a.Title, a.Course, deadline)
 }
 
 type Error struct {
