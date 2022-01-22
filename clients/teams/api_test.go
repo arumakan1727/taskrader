@@ -62,3 +62,24 @@ func TestLogin(t *testing.T) {
 		}
 	})
 }
+
+func TestFetchAssignments(t *testing.T) {
+	err := teams.Login(credential.Teams.Email, credential.Teams.Password, log.Default())
+	if err != nil {
+		switch err.(type) {
+		case *teams.ErrAlreadyLogined:
+			break
+		default:
+			t.Fatal(err)
+		}
+	}
+
+	ass, err := teams.FetchAssignments(log.Default())
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("len(ass) = %d", len(ass))
+	for i, a := range ass {
+		t.Logf("[%02d] title=%q\n  course=%q, deadline=%q\n", i+1, a.Title, a.Course, a.Deadline)
+	}
+}
