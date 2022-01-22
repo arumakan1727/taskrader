@@ -10,19 +10,6 @@ import (
 	color "github.com/fatih/color"
 )
 
-/*
-Origin   Origin    // 課題の出所
-	Title    string    // 課題のタイトル
-	Course   string    // 科目orコース名
-	Deadline time.Time // 課題の締め切り; 不明の場合は UnknownDeadline() を設定する
-*/
-
-/*
-n件の未提出課題：
-[index]	Title
-Deadline	@ + Origin
-*/
-
 func Show(tasks []*assignment.Assignment) {
 	const formatHour = "2006/01/02"
 	const formatMin = "15:04"
