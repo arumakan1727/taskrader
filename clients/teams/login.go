@@ -42,9 +42,7 @@ func Login(email, password string, logger *log.Logger) error {
 		if err != nil {
 			return err
 		}
-		logger.Printf("URL is %s", url)
 		if strings.HasPrefix(url, "https://www.office.com") {
-			time.Sleep(time.Minute)
 			return NewErrAlreadyLogined()
 		}
 	}
@@ -73,7 +71,6 @@ func Login(email, password string, logger *log.Logger) error {
 	if err := clickButtonHavingID(page, elemIDConfirmButton, 2*time.Second); err != nil {
 		return err
 	}
-	time.Sleep(time.Second)
 
 	logger.Printf("Login succeeded.")
 	return nil

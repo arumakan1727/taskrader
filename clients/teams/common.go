@@ -41,8 +41,8 @@ func myChromeOptions() (agouti.Option, error) {
 
 	opt := agouti.ChromeOptions(
 		"args", []string{
-			// "--headless",
-			// "--disable-gpu",
+			"--headless",
+			"--disable-gpu",
 			"--user-data-dir=" + dir,
 		},
 	)

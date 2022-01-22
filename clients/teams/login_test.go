@@ -29,8 +29,36 @@ func init() {
 }
 
 func TestLogin(t *testing.T) {
-	err := teams.Login(credential.Teams.Email, credential.Teams.Password, log.Default())
-	if err != nil {
-		t.Fatal(err)
-	}
+	teams.ClearCookies()
+
+	t.Run("Login with correct credential and cleared cookies should be success", func(t *testing.T) {
+		err := teams.Login(credential.Teams.Email, credential.Teams.Password, log.Default())
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	t.Run("Login should return ErrAlreadyLogined", func(t *testing.T) {
+		err := teams.Login(credential.Teams.Email, credential.Teams.Password, log.Default())
+
+		switch err.(type) {
+		case *teams.ErrAlreadyLogined:
+			return
+		default:
+			t.Errorf("Expected *teams.ErrAlreadyLogined, but got: %s", err)
+		}
+	})
+
+	teams.ClearCookies()
+
+	t.Run("ClearCookies should works & Login with incorrect credential should return ErrEmailOrPasswdWrong", func(t *testing.T) {
+		err := teams.Login(credential.Teams.Email, "wrong-password", log.Default())
+
+		switch err.(type) {
+		case *teams.ErrEmailOrPasswdWrong:
+			return
+		default:
+			t.Errorf("Expected *teams.ErrAlreadyLogined, but got: %s", err)
+		}
+	})
 }
