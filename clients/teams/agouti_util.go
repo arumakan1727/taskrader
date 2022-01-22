@@ -30,15 +30,36 @@ func sendKeys(page *agouti.Page, name, keys string, timeout time.Duration) error
 	return nil
 }
 
-func clickButtonHavingID(page *agouti.Page, buttonID string, timeout time.Duration) error {
+func clickButtonByID(page *agouti.Page, buttonID string, timeout time.Duration) error {
 	startTime := time.Now()
 	for {
-		if err := page.FindByID(buttonID).Click(); err == nil {
-			return nil
+		btn := page.FindByID(buttonID)
+		visible, err := btn.Visible()
+		if err == nil && visible {
+			if err := btn.Click(); err == nil {
+				return nil
+			}
 		}
 		time.Sleep(200 * time.Millisecond)
 		if time.Since(startTime) > timeout {
 			return fmt.Errorf("Failed to click button having id=%s", buttonID)
+		}
+	}
+}
+
+func clickButtonBySelector(page *agouti.Page, selector string, timeout time.Duration) error {
+	startTime := time.Now()
+	for {
+		btn := page.Find(selector)
+		visible, err := btn.Visible()
+		if err == nil && visible {
+			if err := btn.Click(); err == nil {
+				return nil
+			}
+		}
+		time.Sleep(200 * time.Millisecond)
+		if time.Since(startTime) > timeout {
+			return fmt.Errorf("Failed to click button by selector %s", selector)
 		}
 	}
 }

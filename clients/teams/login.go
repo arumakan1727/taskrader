@@ -51,7 +51,7 @@ func Login(email, password string, logger *log.Logger) error {
 	if err := sendKeys(page, elemNameEmail, email, 5*time.Second); err != nil {
 		return err
 	}
-	if err := clickButtonHavingID(page, elemIDConfirmButton, 2*time.Second); err != nil {
+	if err := clickButtonByID(page, elemIDConfirmButton, 2*time.Second); err != nil {
 		return err
 	}
 	time.Sleep(time.Second)
@@ -60,7 +60,7 @@ func Login(email, password string, logger *log.Logger) error {
 	if err := sendKeys(page, elemNamePassword, password, 2*time.Second); err != nil {
 		return err
 	}
-	if err := clickButtonHavingID(page, elemIDConfirmButton, 2*time.Second); err != nil {
+	if err := clickButtonByID(page, elemIDConfirmButton, 2*time.Second); err != nil {
 		return err
 	}
 	time.Sleep(time.Second)
@@ -68,7 +68,7 @@ func Login(email, password string, logger *log.Logger) error {
 	if existsElementHavingID(page, elemIDPasswordError, 100*time.Millisecond, 300*time.Millisecond) {
 		return NewErrEmailOrPasswdWrong(email)
 	}
-	if err := clickButtonHavingID(page, elemIDConfirmButton, 2*time.Second); err != nil {
+	if err := clickButtonByID(page, elemIDConfirmButton, 2*time.Second); err != nil {
 		return err
 	}
 

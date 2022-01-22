@@ -10,6 +10,7 @@ import (
 
 const (
 	loginURL = `https://login.microsoftonline.com`
+	teamsURL = "https://teams.microsoft.com"
 )
 
 // Selenium の ChromeDriver が使うユーザプロフィールデータの保存先ディレクトリ
