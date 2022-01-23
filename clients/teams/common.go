@@ -16,6 +16,16 @@ const (
 // Selenium の ChromeDriver が使うユーザプロフィールデータの保存先ディレクトリ
 // Cookie はここに永続保存される
 func ChromeTmpUserDataDir() (string, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	dirInfo, err := os.Stat(path.Join(homeDir, "snap", "chromium"))
+	if err == nil && dirInfo.IsDir() {
+		return path.Join(homeDir, "snap", "chromium", "current", ".cache", "taskrader", "chrome-tmp-profile"), nil
+	}
+
 	cacheDir, err := config.TaskRaderCacheDir()
 	if err != nil {
 		return "", err
@@ -45,6 +55,7 @@ func myChromeOptions() (agouti.Option, error) {
 			"--headless",
 			"--disable-gpu",
 			"--user-data-dir=" + dir,
+			"--lang=en",
 		},
 	)
 	return opt, nil
