@@ -128,5 +128,10 @@ func scrapeAssignmentList(html string, logger *log.Logger) ([]Assignment, error)
 }
 
 func parseDueText(text string) (time.Time, error) {
-	return time.ParseInLocation("Due January 2, 2006 03:04 PM", text, time.Local)
+	if strings.HasPrefix(text, "Due") {
+		return time.ParseInLocation("Due January 2, 2006 03:04 PM", text, time.Local)
+	} else if strings.HasPrefix(text, "期限") {
+		return time.ParseInLocation("期限 2006年1月2日 15:04", text, time.Local)
+	}
+	return time.Time{}, fmt.Errorf("Unknown dueText format: %s", text)
 }
