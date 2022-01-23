@@ -21,11 +21,11 @@ func Login(email, password string, logger *log.Logger) error {
 		return err
 	}
 	driver := agouti.ChromeDriver(opt)
-	defer driver.Stop()
-
 	if err := driver.Start(); err != nil {
 		return err
 	}
+	defer driver.Stop()
+
 	page, err := driver.NewPage()
 	if err != nil {
 		return err

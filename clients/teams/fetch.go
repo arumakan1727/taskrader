@@ -33,11 +33,11 @@ func fetchAssignmentsPageHTML(logger *log.Logger) (string, error) {
 		return "", err
 	}
 	driver := agouti.ChromeDriver(opt)
-	defer driver.Stop()
-
 	if err := driver.Start(); err != nil {
 		return "", err
 	}
+	defer driver.Stop()
+
 	page, err := driver.NewPage()
 	if err != nil {
 		return "", err
@@ -115,7 +115,7 @@ func scrapeAssignmentList(html string, logger *log.Logger) ([]Assignment, error)
 		if err != nil {
 			tm = time.Time{}
 		}
-		logger.Printf("dueText = %q, err=%v, tm=%q", dueText, err, tm)
+		logger.Printf("dueText = %q, err=%v, parseResult=%q", dueText, err, tm)
 
 		res = append(res, Assignment{
 			Title:    title,
