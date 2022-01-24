@@ -1,4 +1,4 @@
-package cmd
+package subcmd
 
 import "github.com/spf13/cobra"
 

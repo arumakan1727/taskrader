@@ -3,13 +3,13 @@ package view
 import (
 	"testing"
 
-	"github.com/arumakan1727/taskrader/assignment"
-	"github.com/arumakan1727/taskrader/cred"
+	"github.com/arumakan1727/taskrader/pkg/assignment"
+	"github.com/arumakan1727/taskrader/pkg/cred"
 	"github.com/joho/godotenv"
 )
 
 func TestShow(t *testing.T) {
-	_ = godotenv.Load("../.env")
+	_ = godotenv.Load("../../.env")
 	cred := cred.LoadFromEnv()
 	cred.AbortIfEmptyFieldExists()
 

@@ -6,7 +6,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/arumakan1727/taskrader/assignment"
+	"github.com/arumakan1727/taskrader/pkg/assignment"
 	color "github.com/fatih/color"
 )
 

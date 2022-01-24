@@ -4,10 +4,10 @@ import (
 	"io"
 	"log"
 
-	"github.com/arumakan1727/taskrader/clients/edstem"
-	"github.com/arumakan1727/taskrader/clients/gakujo"
-	"github.com/arumakan1727/taskrader/clients/teams"
-	"github.com/arumakan1727/taskrader/cred"
+	"github.com/arumakan1727/taskrader/pkg/clients/edstem"
+	"github.com/arumakan1727/taskrader/pkg/clients/gakujo"
+	"github.com/arumakan1727/taskrader/pkg/clients/teams"
+	"github.com/arumakan1727/taskrader/pkg/cred"
 )
 
 type gakujoFetechGoroutine = func(*cred.Gakujo, chan []*Assignment, chan *Error)
