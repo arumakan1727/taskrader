@@ -95,7 +95,7 @@ func scrapeAssignmentList(html string, logger *log.Logger) ([]Assignment, error)
 
 	listContainer := doc.Find(selectorAssignmentList)
 	if attr, exists := listContainer.Attr("data-test"); !exists || attr != "assignment-list" {
-		return nil, fmt.Errorf("Failed to find assignment-list: `%s`", selectorAssignmentList)
+		return nil, fmt.Errorf("failed to find assignment-list: `%s`", selectorAssignmentList)
 	}
 
 	cardElems := listContainer.Find(`a > div[data-test="assignment-card"]`)
@@ -133,5 +133,5 @@ func parseDueText(text string) (time.Time, error) {
 	} else if strings.HasPrefix(text, "期限") {
 		return time.ParseInLocation("期限 2006年1月2日 15:04", text, time.Local)
 	}
-	return time.Time{}, fmt.Errorf("Unknown dueText format: %s", text)
+	return time.Time{}, fmt.Errorf("unknown dueText format: %s", text)
 }

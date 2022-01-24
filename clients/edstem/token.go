@@ -18,7 +18,7 @@ func (c *Client) getToken(email, password string) (string, error) {
 		return "", err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("Response status was %d(except %d)", resp.StatusCode, http.StatusOK)
+		return "", fmt.Errorf("response status was %d(except %d)", resp.StatusCode, http.StatusOK)
 	}
 
 	defer resp.Body.Close()

@@ -17,11 +17,11 @@ func (e *ErrEmailOrPasswdWrong) Error() string {
 }
 
 func (e *ErrAlreadyLogined) Error() string {
-	return fmt.Sprint("The microsoft accout is already logged in")
+	return "The microsoft accout is already logged in"
 }
 
 func (e *ErrLoginRequired) Error() string {
-	return fmt.Sprint("Please login to microsoft account")
+	return "Please login to microsoft account"
 }
 
 func NewErrEmailOrPasswdWrong(email string) *ErrEmailOrPasswdWrong {

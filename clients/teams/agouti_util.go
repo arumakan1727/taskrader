@@ -19,7 +19,7 @@ func sendKeys(page *agouti.Page, name, keys string, timeout time.Duration) error
 	startTime := time.Now()
 	for getSelectionValue(page.FindByName(name)) == "" {
 		if time.Since(startTime) > timeout {
-			return fmt.Errorf("Failed to send keys to element having name=%s", name)
+			return fmt.Errorf("failed to send keys to element having name=%s", name)
 		}
 		el := page.FindByName(name)
 		el.Clear()
@@ -42,7 +42,7 @@ func clickButtonByID(page *agouti.Page, buttonID string, timeout time.Duration) 
 		}
 		time.Sleep(200 * time.Millisecond)
 		if time.Since(startTime) > timeout {
-			return fmt.Errorf("Failed to click button having id=%s", buttonID)
+			return fmt.Errorf("failed to click button having id=%s", buttonID)
 		}
 	}
 }
@@ -59,7 +59,7 @@ func clickButtonBySelector(page *agouti.Page, selector string, timeout time.Dura
 		}
 		time.Sleep(200 * time.Millisecond)
 		if time.Since(startTime) > timeout {
-			return fmt.Errorf("Failed to click button by selector %s", selector)
+			return fmt.Errorf("failed to click button by selector %s", selector)
 		}
 	}
 }
