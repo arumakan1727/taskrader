@@ -48,7 +48,7 @@ func Login(email, password string, logger *log.Logger) error {
 	}
 
 	logger.Printf("Sending email %s ...", email)
-	if err := sendKeys(page, elemNameEmail, email, 5*time.Second); err != nil {
+	if err := sendKeys(page, elemNameEmail, email, 10*time.Second); err != nil {
 		return err
 	}
 	if err := clickButtonByID(page, elemIDConfirmButton, 3*time.Second); err != nil {
