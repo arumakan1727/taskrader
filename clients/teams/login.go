@@ -48,7 +48,7 @@ func Login(email, password string, logger *log.Logger) error {
 	}
 
 	logger.Printf("Sending email %s ...", email)
-	if err := sendKeys(page, elemNameEmail, email, 7*time.Second); err != nil {
+	if err := sendKeys(page, elemNameEmail, email, 20*time.Second); err != nil {
 		return err
 	}
 	if err := clickButtonByID(page, elemIDConfirmButton, 3*time.Second); err != nil {
@@ -57,7 +57,7 @@ func Login(email, password string, logger *log.Logger) error {
 	time.Sleep(time.Second)
 
 	logger.Printf("Sending password ...")
-	if err := sendKeys(page, elemNamePassword, password, 7*time.Second); err != nil {
+	if err := sendKeys(page, elemNamePassword, password, 20*time.Second); err != nil {
 		return err
 	}
 	if err := clickButtonByID(page, elemIDConfirmButton, 3*time.Second); err != nil {
@@ -68,7 +68,7 @@ func Login(email, password string, logger *log.Logger) error {
 	if existsElementHavingID(page, elemIDPasswordError, 100*time.Millisecond, 300*time.Millisecond) {
 		return NewErrEmailOrPasswdWrong(email)
 	}
-	if err := clickButtonByID(page, elemIDConfirmButton, 7*time.Second); err != nil {
+	if err := clickButtonByID(page, elemIDConfirmButton, 20*time.Second); err != nil {
 		return err
 	}
 
