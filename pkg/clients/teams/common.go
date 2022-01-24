@@ -4,7 +4,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/arumakan1727/taskrader/config"
+	"github.com/arumakan1727/taskrader/pkg/config"
 	"github.com/sclevine/agouti"
 )
 

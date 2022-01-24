@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/arumakan1727/taskrader/cred"
+	"github.com/arumakan1727/taskrader/pkg/cred"
 )
 
 // 並行処理ができているか確かめるだけ (通信は行わない)

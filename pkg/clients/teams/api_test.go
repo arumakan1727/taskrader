@@ -6,15 +6,15 @@ import (
 	"os"
 	"testing"
 
-	"github.com/arumakan1727/taskrader/clients/teams"
-	"github.com/arumakan1727/taskrader/cred"
+	"github.com/arumakan1727/taskrader/pkg/clients/teams"
+	"github.com/arumakan1727/taskrader/pkg/cred"
 	"github.com/joho/godotenv"
 )
 
 var credential *cred.Credential
 
 func init() {
-	_ = godotenv.Load("../../.env")
+	_ = godotenv.Load("../../../.env")
 	credential = cred.LoadFromEnv()
 	credential.AbortIfEmptyFieldExists()
 }

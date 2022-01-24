@@ -5,8 +5,8 @@ import (
 	"log"
 	"testing"
 
-	"github.com/arumakan1727/taskrader/clients/edstem"
-	"github.com/arumakan1727/taskrader/cred"
+	"github.com/arumakan1727/taskrader/pkg/clients/edstem"
+	"github.com/arumakan1727/taskrader/pkg/cred"
 	"github.com/joho/godotenv"
 )
 
@@ -16,7 +16,7 @@ var (
 )
 
 func init() {
-	_ = godotenv.Load("../.env")
+	_ = godotenv.Load("../../../.env")
 
 	cred := cred.LoadFromEnv()
 	cred.AbortIfEmptyFieldExists()
