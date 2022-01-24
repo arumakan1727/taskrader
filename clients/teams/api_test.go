@@ -21,8 +21,8 @@ func init() {
 
 func TestLogin(t *testing.T) {
 	if os.Getenv("NOW_ON_CI") != "" {
-		// CI の場合はまず空ログインしておかないと何故かうまくいかない
-		_ = teams.Login(credential.Teams.Email, credential.Teams.Password, log.New(io.Discard, "", 0))
+		// CI の場合は本テスト関数は実行しない
+		return
 	}
 
 	teams.ClearCookies()
@@ -60,6 +60,11 @@ func TestLogin(t *testing.T) {
 }
 
 func TestFetchAssignments(t *testing.T) {
+	if os.Getenv("NOW_ON_CI") != "" {
+		// CI の場合はまず空ログインしておかないと何故かうまくいかない
+		_ = teams.Login(credential.Teams.Email, credential.Teams.Password, log.New(io.Discard, "", 0))
+	}
+
 	err := teams.Login(credential.Teams.Email, credential.Teams.Password, log.Default())
 	if err != nil {
 		switch err.(type) {

@@ -47,7 +47,7 @@ func fetchAssignmentsPageHTML(logger *log.Logger) (string, error) {
 	if err := page.Navigate(teamsURL); err != nil {
 		return "", err
 	}
-	time.Sleep(2 * time.Second)
+	time.Sleep(3 * time.Second)
 
 	{
 		url, err := page.URL()
@@ -60,7 +60,7 @@ func fetchAssignmentsPageHTML(logger *log.Logger) (string, error) {
 	}
 
 	logger.Println("Switching to assignments tab ...")
-	if err := clickButtonBySelector(page, selectorAssignmentTabBtn, 7*time.Second); err != nil {
+	if err := clickButtonBySelector(page, selectorAssignmentTabBtn, 10*time.Second); err != nil {
 		return "", err
 	}
 	time.Sleep(3 * time.Second)
