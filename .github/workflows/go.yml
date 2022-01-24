@@ -43,6 +43,7 @@ jobs:
         EDSTEM_PASSWORD: ${{ secrets.EDSTEM_PASSWORD }}
         TEAMS_EMAIL:     ${{ secrets.TEAMS_EMAIL }}
         TEAMS_PASSWORD:  ${{ secrets.TEAMS_PASSWORD }}
+        NOW_ON_CI: "1"
 
     - name: staticcheck
       uses: dominikh/staticcheck-action@v1.1.0

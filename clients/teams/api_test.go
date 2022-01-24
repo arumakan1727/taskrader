@@ -1,7 +1,9 @@
 package teams_test
 
 import (
+	"io"
 	"log"
+	"os"
 	"testing"
 
 	"github.com/arumakan1727/taskrader/clients/teams"
@@ -18,6 +20,11 @@ func init() {
 }
 
 func TestLogin(t *testing.T) {
+	if os.Getenv("NOW_ON_CI") != "" {
+		// CI の場合はまず空ログインしておかないと何故かうまくいかない
+		_ = teams.Login(credential.Teams.Email, credential.Teams.Password, log.New(io.Discard, "", 0))
+	}
+
 	teams.ClearCookies()
 
 	t.Run("Login with correct credential and cleared cookies should be success", func(t *testing.T) {
