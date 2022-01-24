@@ -52,4 +52,4 @@ jobs:
 
     - name: gofmt
       shell: bash
-      run: files=$(gofmt -l .) && echo "${files:-[OK] All files are formatted}" && test -z "$files
+      run: files=$(gofmt -l $(find . -type f -name '*.go' -not -path '*/\.git/*')) && echo "${files:-[OK] All files are formatted}" && test -z "$files
