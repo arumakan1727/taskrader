@@ -3,7 +3,6 @@ package edstem
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 )
@@ -18,7 +17,7 @@ func (c *Client) getToken(email, password string) (string, error) {
 		return "", err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("response status was %d(except %d)", resp.StatusCode, http.StatusOK)
+		return "", NewErrEmailOrPasswdWrong(email).Error()
 	}
 
 	defer resp.Body.Close()
