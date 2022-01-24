@@ -70,5 +70,8 @@ func TestFetchAssignments(t *testing.T) {
 	t.Logf("len(ass) = %d", len(ass))
 	for i, a := range ass {
 		t.Logf("[%02d] title=%q\n  course=%q, deadline=%q\n", i+1, a.Title, a.Course, a.Deadline)
+		if a.Deadline.IsZero() {
+			t.Errorf("Deadline is zero; Probably failed to parse dueText")
+		}
 	}
 }
