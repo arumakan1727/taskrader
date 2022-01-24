@@ -129,8 +129,31 @@ func scrapeAssignmentList(html string, logger *log.Logger) ([]Assignment, error)
 
 func parseDueText(text string) (time.Time, error) {
 	if strings.HasPrefix(text, "Due") {
+		if strings.HasPrefix(text, "Due tomorrow at") {
+			replaceTo := time.Now().AddDate(0, 0, 1).Format("January 2, 2006")
+			text = strings.Replace(text, "tomorrow at", replaceTo, 1)
+
+		} else if strings.HasPrefix(text, "Due today at") {
+			replaceTo := time.Now().Format("January 2, 2006")
+			text = strings.Replace(text, "today at", replaceTo, 1)
+		}
 		return time.ParseInLocation("Due January 2, 2006 3:04 PM", text, time.Local)
-	} else if strings.HasPrefix(text, "期限") {
+	}
+	if strings.HasPrefix(text, "明日") {
+		text = strings.TrimPrefix(text, "明日")
+		text = strings.TrimSuffix(text, "が期限")
+		text = strings.TrimSpace(text)
+		t := time.Now().AddDate(0, 0, 1)
+		text = "期限" + t.Format(" 2006年1月2日 ") + text
+	}
+	if strings.HasPrefix(text, "今日") {
+		text = strings.TrimPrefix(text, "今日")
+		text = strings.TrimSuffix(text, "が期限")
+		text = strings.TrimSpace(text)
+		t := time.Now()
+		text = "期限" + t.Format(" 2006年1月2日 ") + text
+	}
+	if strings.HasPrefix(text, "期限") {
 		return time.ParseInLocation("期限 2006年1月2日 15:04", text, time.Local)
 	}
 	return time.Time{}, fmt.Errorf("unknown dueText format: %s", text)
