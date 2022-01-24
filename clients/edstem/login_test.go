@@ -1,11 +1,12 @@
-package edstem
+package edstem_test
 
 import (
 	"fmt"
 	"log"
-	"os"
 	"testing"
 
+	"github.com/arumakan1727/taskrader/clients/edstem"
+	"github.com/arumakan1727/taskrader/cred"
 	"github.com/joho/godotenv"
 )
 
@@ -15,15 +16,16 @@ var (
 )
 
 func init() {
-	if err := godotenv.Load("../.env"); err != nil {
-		log.Fatal("please set .env file!!", err)
-	}
+	_ = godotenv.Load("../.env")
 
-	email = os.Getenv("email")
-	password = os.Getenv("password")
+	cred := cred.LoadFromEnv()
+	cred.AbortIfEmptyFieldExists()
+	email = cred.EdStem.Email
+	password = cred.EdStem.Password
 }
+
 func TestEdstam(t *testing.T) {
-	c := NewClient()
+	c := edstem.NewClient()
 	err := c.Login(email, password)
 	if err != nil {
 		log.Fatal(err)
