@@ -82,3 +82,12 @@ func (c *Credential) CheckEmptyField() []ErrEmpty {
 	}
 	return errs
 }
+
+func (c *Credential) AbortIfEmptyFieldExists() {
+	if errs := c.CheckEmptyField(); len(errs) > 0 {
+		for _, e := range errs {
+			fmt.Fprintln(os.Stderr, "Error: "+e.Error())
+		}
+		os.Exit(1)
+	}
+}

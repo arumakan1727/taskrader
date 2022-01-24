@@ -1,8 +1,6 @@
 package view
 
 import (
-	"fmt"
-	"os"
 	"testing"
 
 	"github.com/arumakan1727/taskrader/assignment"
@@ -11,17 +9,9 @@ import (
 )
 
 func TestShow(t *testing.T) {
-	if err := godotenv.Load("../.env"); err != nil {
-		panic("Please put ../.env !")
-	}
-
+	_ = godotenv.Load("../.env")
 	cred := cred.LoadFromEnv()
-	if errs := cred.CheckEmptyField(); len(errs) > 0 {
-		for _, e := range errs {
-			fmt.Fprintln(os.Stderr, "Error: "+e.Error())
-		}
-		os.Exit(1)
-	}
+	cred.AbortIfEmptyFieldExists()
 
 	ass, errs := assignment.FetchAll(cred)
 
@@ -31,5 +21,4 @@ func TestShow(t *testing.T) {
 	}
 
 	Show(ass)
-
 }
