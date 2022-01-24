@@ -22,7 +22,8 @@ type EdStem struct {
 }
 
 type Teams struct {
-	Token string
+	Email    string
+	Password string
 }
 
 // 環境変数から Credential を生成する。
@@ -39,7 +40,8 @@ func LoadFromEnv() *Credential {
 			Password: os.Getenv("EDSTEM_PASSWORD"),
 		},
 		Teams: Teams{
-			Token: os.Getenv("TEAMS_TOKEN"),
+			Email:    os.Getenv("TEAMS_EMAIL"),
+			Password: os.Getenv("TEAMS_PASSWORD"),
 		},
 	}
 }
@@ -71,6 +73,12 @@ func (c *Credential) CheckEmptyField() []ErrEmpty {
 	}
 	if c.EdStem.Password == "" {
 		errs = append(errs, newErrEmpty("EdStem.Password"))
+	}
+	if c.Teams.Email == "" {
+		errs = append(errs, newErrEmpty("Teams.Email"))
+	}
+	if c.Teams.Password == "" {
+		errs = append(errs, newErrEmpty("Teams.Password"))
 	}
 	return errs
 }
