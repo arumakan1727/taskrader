@@ -36,3 +36,20 @@ func TestEdstam(t *testing.T) {
 	}
 	fmt.Println(announcement)
 }
+
+func TestEdstemWrongPasswd(t *testing.T) {
+	c := edstem.NewClient()
+	err := c.Login(email, password+"wrong_password")
+
+	switch err.(type) {
+	case *edstem.ErrEmailOrPasswdWrong:
+		e := err.(*edstem.ErrEmailOrPasswdWrong) // 型をキャスト
+		if e.Email != email {
+			t.Errorf("err.Email: Expected %s, but got %s", email, e.Email)
+		}
+		break
+
+	default:
+		t.Errorf("Expected *edstem.ErrEmailOrPasswdWrong, but got %v", err)
+	}
+}
