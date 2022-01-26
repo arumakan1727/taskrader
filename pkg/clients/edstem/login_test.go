@@ -46,7 +46,6 @@ func TestEdstemWrongPasswd(t *testing.T) {
 		if err.Email != email {
 			t.Errorf("err.Email: Expected %s, but got %s", email, err.Email)
 		}
-		break
 
 	default:
 		t.Errorf("Expected *edstem.ErrEmailOrPasswdWrong, but got %v", err)
