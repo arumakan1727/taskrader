@@ -9,13 +9,24 @@ import (
 	"github.com/arumakan1727/taskrader/pkg/cred"
 )
 
-func TestSaveAndLoadJSON(t *testing.T) {
+var jsonPath string
+
+func TestMain(m *testing.M) {
+	// 一時的なディレクトリ & json ファイルパスの取得
 	tempDir, err := ioutil.TempDir(os.TempDir(), "gotest")
 	if err != nil {
-		t.Fatal(err)
+		panic(err)
 	}
-	jsonPath := path.Join(tempDir, "hoge", "taskrader", "credential.json")
+	jsonPath = path.Join(tempDir, "hoge", "taskrader", "credential.json")
 
+	// テスト実行
+	m.Run()
+
+	// 一時的に生成したディレクトリを再帰的に削除
+	os.RemoveAll(tempDir)
+}
+
+func TestSaveAndLoadJSON(t *testing.T) {
 	c := cred.Credential{
 		Gakujo: cred.Gakujo{
 			Username: "gakujo-username",
