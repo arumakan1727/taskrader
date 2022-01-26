@@ -207,7 +207,7 @@ func (c *Client) postSSOexecution(reqUrl, username, password string) (io.ReadClo
 		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("response status was %d(expect %d)", resp.StatusCode, http.StatusOK)
+		return nil, NewErrUsernameOrPasswdWrong(username)
 	}
 
 	return resp.Body, nil
