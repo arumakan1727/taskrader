@@ -84,7 +84,6 @@ func (c *Credential) SaveToFile(filepath string) error {
 	return ioutil.WriteFile(filepath, bs, 0600)
 }
 
-
 func encrypt(plaintext []byte) ([]byte, error) {
 	key := getKey()
 	nonce := getNonce()
