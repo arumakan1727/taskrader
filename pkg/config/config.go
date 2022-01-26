@@ -5,7 +5,7 @@ import (
 	"path"
 )
 
-func TaskRaderCacheDir() (string, error) {
+func TaskraderCacheDir() (string, error) {
 	cacheDir, err := os.UserCacheDir()
 	if err != nil {
 		return "", err
