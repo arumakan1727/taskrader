@@ -31,11 +31,10 @@ func expectErrUsernameOrPasswdWrong(err error, username string, t *testing.T) {
 	if err == nil {
 		t.Error("Expect login error, but no error occured.")
 	} else {
-		switch err.(type) {
+		switch err := err.(type) {
 		case *gakujo.ErrUsernameOrPasswdWrong:
-			e := err.(*gakujo.ErrUsernameOrPasswdWrong)
-			if e.Username != username {
-				t.Errorf("Expected err.Username=%s, but got %s", gakujoCred.Username, e.Username)
+			if err.Username != username {
+				t.Errorf("Expected err.Username=%s, but got %s", gakujoCred.Username, err.Username)
 			}
 		default:
 			t.Errorf("Expected err type is *ErrUsernameOrPasswdWrong, but got %v", err)
