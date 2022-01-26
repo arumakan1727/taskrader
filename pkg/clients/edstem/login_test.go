@@ -41,11 +41,10 @@ func TestEdstemWrongPasswd(t *testing.T) {
 	c := edstem.NewClient()
 	err := c.Login(email, password+"wrong_password")
 
-	switch err.(type) {
+	switch err := err.(type) {
 	case *edstem.ErrEmailOrPasswdWrong:
-		e := err.(*edstem.ErrEmailOrPasswdWrong) // 型をキャスト
-		if e.Email != email {
-			t.Errorf("err.Email: Expected %s, but got %s", email, e.Email)
+		if err.Email != email {
+			t.Errorf("err.Email: Expected %s, but got %s", email, err.Email)
 		}
 		break
 
