@@ -12,7 +12,7 @@ import (
 var savePath string
 
 func TestMain(m *testing.M) {
-	// 一時的なディレクトリ & json ファイルパスの取得
+	// 一時的なディレクトリ & ファイルパスの取得
 	tempDir, err := ioutil.TempDir(os.TempDir(), "gotest")
 	if err != nil {
 		panic(err)
