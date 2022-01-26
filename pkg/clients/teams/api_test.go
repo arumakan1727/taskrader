@@ -47,12 +47,14 @@ func TestLogin(t *testing.T) {
 
 	teams.ClearCookies()
 
-	t.Run("ClearCookies should works & Login with incorrect credential should return ErrEmailOrPasswdWrong", func(t *testing.T) {
+	t.Run("ClearCookies should works & Login with incorrect password should return ErrEmailOrPasswdWrong", func(t *testing.T) {
 		err := teams.Login(credential.Teams.Email, "wrong-password", log.Default())
 
-		switch err.(type) {
+		switch err := err.(type) {
 		case *teams.ErrEmailOrPasswdWrong:
-			return
+			if err.Email != credential.Teams.Email {
+				t.Errorf("Expected err.Email = %s, but got %s", credential.Teams.Email, err.Email)
+			}
 		default:
 			t.Errorf("Expected *teams.ErrAlreadyLogined, but got: %s", err)
 		}
