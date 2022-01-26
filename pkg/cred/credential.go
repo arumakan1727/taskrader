@@ -1,29 +1,65 @@
 package cred
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path"
 )
 
 type Credential struct {
-	Gakujo Gakujo
-	EdStem EdStem
-	Teams  Teams
+	Gakujo Gakujo `json:"gakujo"`
+	EdStem EdStem `json:"edstem"`
+	Teams  Teams  `json:"teams"`
 }
 
 type Gakujo struct {
-	Username string
-	Password string
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 type EdStem struct {
-	Email    string
-	Password string
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type Teams struct {
-	Email    string
-	Password string
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+func LoadFromJSONFile(filepath string) (*Credential, error) {
+	bs, err := ioutil.ReadFile(filepath)
+	if err != nil {
+		return nil, err
+	}
+
+	var c Credential
+	if err := json.Unmarshal(bs, &c); err != nil {
+		return nil, err
+	}
+	return &c, nil
+}
+
+// filepath からの読み込みを試行し、成功すればその結果をそのまま返し、失敗したら空の credential を返す。
+func LoadFromJSONFileOrEmpty(filepath string) *Credential {
+	c, err := LoadFromJSONFile(filepath)
+	if err != nil {
+		return &Credential{}
+	}
+	return c
+}
+
+// filepath の親ディレクトリを再帰的に作成してから filepath に書き出す。
+// ディレクトリ作成時のエラーは無視される。
+func (c *Credential) SaveToJSONFile(filepath string) error {
+	bs, err := json.Marshal(c)
+	if err != nil {
+		return err
+	}
+	os.MkdirAll(path.Dir(filepath), 0700)
+	return ioutil.WriteFile(filepath, bs, 0600)
 }
 
 // 環境変数から Credential を生成する。

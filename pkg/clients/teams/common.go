@@ -26,7 +26,7 @@ func ChromeTmpUserDataDir() (string, error) {
 		return path.Join(homeDir, "snap", "chromium", "current", ".cache", "taskrader", "chrome-tmp-profile"), nil
 	}
 
-	cacheDir, err := config.TaskRaderCacheDir()
+	cacheDir, err := config.TaskraderCacheDir()
 	if err != nil {
 		return "", err
 	}
