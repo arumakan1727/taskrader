@@ -1,11 +1,17 @@
 package cred
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/hmac"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
+
+	"github.com/denisbrodbeck/machineid"
 )
 
 type Credential struct {
@@ -29,22 +35,31 @@ type Teams struct {
 	Password string `json:"password"`
 }
 
-func LoadFromJSONFile(filepath string) (*Credential, error) {
+// filepath から暗号化されたデータを読み出して復号して credential を生成する。
+// データのフォーマットに異常があった場合はファイルを削除する。
+func LoadFromFile(filepath string) (*Credential, error) {
 	bs, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		return nil, err
 	}
 
+	bs, err = decrypt(bs)
+	if err != nil {
+		os.Remove(filepath)
+		return nil, err
+	}
+
 	var c Credential
 	if err := json.Unmarshal(bs, &c); err != nil {
+		os.Remove(filepath)
 		return nil, err
 	}
 	return &c, nil
 }
 
 // filepath からの読み込みを試行し、成功すればその結果をそのまま返し、失敗したら空の credential を返す。
-func LoadFromJSONFileOrEmpty(filepath string) *Credential {
-	c, err := LoadFromJSONFile(filepath)
+func LoadFromFileOrEmpty(filepath string) *Credential {
+	c, err := LoadFromFile(filepath)
 	if err != nil {
 		return &Credential{}
 	}
@@ -53,13 +68,80 @@ func LoadFromJSONFileOrEmpty(filepath string) *Credential {
 
 // filepath の親ディレクトリを再帰的に作成してから filepath に書き出す。
 // ディレクトリ作成時のエラーは無視される。
-func (c *Credential) SaveToJSONFile(filepath string) error {
+func (c *Credential) SaveToFile(filepath string) error {
 	bs, err := json.Marshal(c)
 	if err != nil {
 		return err
 	}
+
+	bs, err = encrypt(bs)
+	if err != nil {
+		return err
+	}
+
 	os.MkdirAll(path.Dir(filepath), 0700)
+
 	return ioutil.WriteFile(filepath, bs, 0600)
+}
+
+
+func encrypt(plaintext []byte) ([]byte, error) {
+	key := getKey()
+	nonce := getNonce()
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+	ciphertext := aesgcm.Seal(nil, nonce, plaintext, nil)
+	return ciphertext, nil
+}
+
+func decrypt(ciphertext []byte) ([]byte, error) {
+	key := getKey()
+	nonce := getNonce()
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+	plaintext, err := aesgcm.Open(nil, nonce, ciphertext, nil)
+	return plaintext, err
+}
+
+func getKey() []byte {
+	var machineID []byte
+
+	if id, err := machineid.ID(); err == nil {
+		machineID = []byte(id)
+	} else {
+		dir, _ := os.UserHomeDir()
+		slug := make([]byte, 0, 40)
+		slug = append(slug, []byte(dir)...)
+
+		var x, a, b, c byte = 117, 5, 3, 6
+		for len(slug) < 40 {
+			x ^= x >> a
+			x ^= x << b
+			x ^= x >> c
+			slug = append(slug, x)
+		}
+		machineID = slug
+	}
+
+	mac := hmac.New(sha256.New, machineID)
+	mac.Write([]byte("taskrader"))
+	return mac.Sum(nil)
+}
+
+func getNonce() []byte {
+	return []byte{47, 239, 81, 211, 110, 210, 75, 254, 227, 145, 206, 210}
 }
 
 // 環境変数から Credential を生成する。
