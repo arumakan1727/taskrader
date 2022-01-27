@@ -56,11 +56,11 @@ func interactiveLogin(target string) error {
 	}
 	defer restoreTerminalState()
 
-	savePath, err := config.TaskraderCredentialJSONPath()
+	savePath, err := config.TaskraderCredentialPath()
 	if err != nil {
 		return err
 	}
-	auth := cred.LoadFromJSONFileOrEmpty(savePath)
+	auth := cred.LoadFromFileOrEmpty(savePath)
 
 	switch target {
 	case "gakujo":
