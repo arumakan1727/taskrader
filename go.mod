@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
+	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/fatih/color v1.13.0
 	github.com/joho/godotenv v1.4.0
 	github.com/sclevine/agouti v3.0.0+incompatible

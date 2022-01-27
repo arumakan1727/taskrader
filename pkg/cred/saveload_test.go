@@ -9,15 +9,15 @@ import (
 	"github.com/arumakan1727/taskrader/pkg/cred"
 )
 
-var jsonPath string
+var savePath string
 
 func TestMain(m *testing.M) {
-	// 一時的なディレクトリ & json ファイルパスの取得
+	// 一時的なディレクトリ & ファイルパスの取得
 	tempDir, err := ioutil.TempDir(os.TempDir(), "gotest")
 	if err != nil {
 		panic(err)
 	}
-	jsonPath = path.Join(tempDir, "hoge", "taskrader", "credential.json")
+	savePath = path.Join(tempDir, "hoge", "taskrader", "credential.data")
 
 	// テスト実行
 	m.Run()
@@ -26,7 +26,7 @@ func TestMain(m *testing.M) {
 	os.RemoveAll(tempDir)
 }
 
-func TestSaveAndLoadJSON(t *testing.T) {
+func TestSaveAndLoad(t *testing.T) {
 	c := cred.Credential{
 		Gakujo: cred.Gakujo{
 			Username: "gakujo-username",
@@ -42,16 +42,19 @@ func TestSaveAndLoadJSON(t *testing.T) {
 		},
 	}
 
-	t.Logf("Temporary jsonPath = %s", jsonPath)
+	t.Logf("Temporary savePath = %s", savePath)
 
-	t.Run("SaveToJSONFile() should success", func(t *testing.T) {
-		if err := c.SaveToJSONFile(jsonPath); err != nil {
+	t.Run("SaveToFile() should success", func(t *testing.T) {
+		if err := c.SaveToFile(savePath); err != nil {
 			t.Fatal(err)
 		}
 	})
 
-	t.Run("LoadFromJSONFileOrEmpty() should return credential which is equivalent to saved value", func(t *testing.T) {
-		got, err := cred.LoadFromJSONFile(jsonPath)
+	bytes, _ := ioutil.ReadFile(savePath)
+	t.Logf("content of %s: '%s'", savePath, string(bytes))
+
+	t.Run("LoadFromFile() should return credential which is equivalent to saved value", func(t *testing.T) {
+		got, err := cred.LoadFromFile(savePath)
 		if err != nil {
 			t.Error(err)
 		}
