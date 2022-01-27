@@ -1,6 +1,7 @@
 package assignment
 
 import (
+	"fmt"
 	"io"
 	"log"
 
@@ -59,26 +60,25 @@ func newErr(origin Origin, err error) *Error {
 }
 
 func fetchGakujo(cred *cred.Gakujo, resultChan chan []*Assignment, errChan chan *Error) {
+	if cred.Username == "" || cred.Password == "" {
+		resultChan <- nil
+		errChan <- newErr(OrigGakujo, fmt.Errorf("username, password が空です"))
+	}
 
 	client := gakujo.NewClient()
 
 	err := client.Login(cred.Username, cred.Password)
-
 	if err != nil {
-
 		resultChan <- nil
 		errChan <- newErr(OrigGakujo, err)
 		return
-
 	}
 
 	tasks, err := client.GetTask()
 	if err != nil {
-
 		resultChan <- nil
 		errChan <- newErr(OrigGakujo, err)
 		return
-
 	}
 
 	result := []*Assignment{}
@@ -98,6 +98,11 @@ func fetchGakujo(cred *cred.Gakujo, resultChan chan []*Assignment, errChan chan 
 }
 
 func fetchEdStem(cred *cred.EdStem, resultChan chan []*Assignment, errChan chan *Error) {
+	if cred.Email == "" || cred.Password == "" {
+		resultChan <- nil
+		errChan <- newErr(OrigEdStem, fmt.Errorf("email, password が空です"))
+	}
+
 	client := edstem.NewClient()
 	err := client.Login(cred.Email, cred.Password)
 	if err != nil {
@@ -126,6 +131,11 @@ func fetchEdStem(cred *cred.EdStem, resultChan chan []*Assignment, errChan chan 
 }
 
 func fetchTeams(cred *cred.Teams, resultChan chan []*Assignment, errChan chan *Error) {
+	if cred.Email == "" || cred.Password == "" {
+		resultChan <- nil
+		errChan <- newErr(OrigTeams, fmt.Errorf("email, password が空です"))
+	}
+
 	ass, err := teams.FetchAssignments(log.New(io.Discard, "", 0))
 	if err != nil {
 		resultChan <- nil
