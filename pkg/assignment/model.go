@@ -9,7 +9,7 @@ import (
 type Origin string
 
 const (
-	OrigGakujo = Origin("Gakujo")
+	OrigGakujo = Origin("学情")
 	OrigTeams  = Origin("Teams")
 	OrigEdStem = Origin("EdStem")
 )
