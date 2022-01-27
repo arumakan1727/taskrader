@@ -30,7 +30,7 @@ func sendKeys(page *agouti.Page, name, keys string, timeout time.Duration) error
 	return nil
 }
 
-func clickButtonByID(page *agouti.Page, buttonID string, timeout time.Duration) error {
+func clickElemByID(page *agouti.Page, buttonID string, timeout time.Duration) error {
 	startTime := time.Now()
 	for {
 		btn := page.FindByID(buttonID)
@@ -47,7 +47,7 @@ func clickButtonByID(page *agouti.Page, buttonID string, timeout time.Duration) 
 	}
 }
 
-func clickButtonBySelector(page *agouti.Page, selector string, timeout time.Duration) error {
+func clickElemBySelector(page *agouti.Page, selector string, timeout time.Duration) error {
 	startTime := time.Now()
 	for {
 		btn := page.Find(selector)

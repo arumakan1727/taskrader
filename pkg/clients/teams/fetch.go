@@ -60,7 +60,7 @@ func fetchAssignmentsPageHTML(logger *log.Logger) (string, error) {
 	}
 
 	logger.Println("Switching to assignments tab ...")
-	if err := clickButtonBySelector(page, selectorAssignmentTabBtn, 10*time.Second); err != nil {
+	if err := clickElemBySelector(page, selectorAssignmentTabBtn, 10*time.Second); err != nil {
 		return "", err
 	}
 	time.Sleep(3 * time.Second)
