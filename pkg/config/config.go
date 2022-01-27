@@ -26,5 +26,5 @@ func TaskraderCredentialPath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return path.Join(configDir, "credential.json"), nil
+	return path.Join(configDir, "credential.data"), nil
 }
