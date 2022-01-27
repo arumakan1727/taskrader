@@ -70,7 +70,7 @@ func newLoginCmd() *cobra.Command {
 			}
 			target := strings.ToLower(args[0])
 			if err := interactiveLogin(target); err != nil {
-				fmt.Fprintf(os.Stderr, color.RedString("Error: %s\n", err))
+				fmt.Fprintln(os.Stderr, color.RedString("Error: %s", err))
 				os.Exit(1)
 			}
 			printLoginStatus()
