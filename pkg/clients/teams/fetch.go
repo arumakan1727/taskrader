@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	selectorTeamTabBtn       = `nav > ul > li:nth-child(3) > button`
+	selectorUseWebAppLink    = `#download-desktop-page a.use-app-lnk`
 	selectorAssignmentTabBtn = `nav > ul > li:nth-child(4) > button`
 	selectorIFrame           = `body > app-caching-container > div > div > extension-tab > div > embedded-page-container > div > iframe`
 	selectorAssignmentList   = `#root div.ms-FocusZone[data-test="assignment-list"]`
@@ -57,6 +57,11 @@ func fetchAssignmentsPageHTML(logger *log.Logger) (string, error) {
 		if strings.HasPrefix(url, loginURL) {
 			return "", NewErrLoginRequired()
 		}
+	}
+
+	// たまにデスクトップ版を宣伝する画面が出てくるので、その場合はWeb版続行リンクを押下して数秒待つ
+	if err := clickElemBySelector(page, selectorUseWebAppLink, 2*time.Second); err == nil {
+		time.Sleep(4 * time.Second)
 	}
 
 	logger.Println("Switching to assignments tab ...")
