@@ -21,7 +21,7 @@ func TaskraderConfigDir() (string, error) {
 	return path.Join(configDir, "taskrader"), nil
 }
 
-func TaskraderCredentialJSONPath() (string, error) {
+func TaskraderCredentialPath() (string, error) {
 	configDir, err := TaskraderConfigDir()
 	if err != nil {
 		return "", err
