@@ -16,7 +16,7 @@ var rootCmd = &cobra.Command{
 
 // Go 言語の仕様として、init という名前の関数はパッケージが読み込まれるときに最初に自動で実行される
 func init() {
-	rootCmd.AddCommand(listCmd)
+	rootCmd.AddCommand(newListCmd())
 	rootCmd.AddCommand(newLoginCmd())
 }
 
