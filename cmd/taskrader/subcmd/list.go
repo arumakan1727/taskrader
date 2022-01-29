@@ -35,9 +35,12 @@ func runListCmd(cmd *cobra.Command, args []string) error {
 	}
 	auth := cred.LoadFromFileOrEmpty(credPath)
 
-	color.Blue("課題を取得中...\n\n")
+	color.Blue("課題を取得中...\n")
 	ass, errs := assignment.FetchAll(auth)
-	view.Show(ass)
+
+	fmt.Printf("\n %d件の未提出課題: (締切の近い順)\n", len(ass))
+	view.SortAssignments(ass)
+	view.Show(ass, os.Stdout)
 
 	if len(errs) == 0 {
 		return nil
