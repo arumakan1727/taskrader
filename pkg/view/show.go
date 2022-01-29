@@ -53,7 +53,7 @@ func SortAssignments(ass []*assignment.Assignment) {
 		return
 	}
 
-	afterTomorrow := time.Now().Add(48 * time.Hour + 1)
+	afterTomorrow := time.Now().Add(48*time.Hour + 1)
 
 	sort.SliceStable(ass, func(i, j int) bool {
 		ti := ass[i].Deadline
@@ -172,10 +172,9 @@ func fmtOrig(orig assignment.Origin) string {
 }
 
 var (
-	decoratorOverDue = color.New(color.BgHiRed, color.FgHiWhite, color.Bold)
+	decoratorOverDue  = color.New(color.BgHiRed, color.FgHiWhite, color.Bold)
 	decolatorUntil24h = color.New(color.BgRed, color.FgWhite, color.Bold)
 	decolatorUntil48h = color.New(color.BgYellow, color.FgBlack, color.Bold)
-
 )
 
 func fmtDeadline(t time.Time, enableColor bool) string {
@@ -205,8 +204,6 @@ func fmtDeadline(t time.Time, enableColor bool) string {
 	} else {
 		res = t.Format(layoutDay) + "(" + wdays[t.Weekday()] + ") " + t.Format(layoutTime)
 	}
-
-
 
 	bold := color.New(color.Bold)
 	if diff := time.Until(t); diff < 0 {
