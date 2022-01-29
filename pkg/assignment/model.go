@@ -22,10 +22,11 @@ type Assignment struct {
 	Deadline time.Time // 課題の締め切り; 不明の場合は UnknownDeadline() を設定する
 }
 
-// 不明な締切日時を表す定数;
-// Go ではオブジェクトは const にできないので、関数で実装した (var だと書き換えできてしまう)
+var _unknownDeadline = time.Unix(1<<60, 999999999)
+
+// 不明な締切日時を表す定数
 func UnknownDeadline() time.Time {
-	return time.Unix(1<<60, 999999999)
+	return _unknownDeadline
 }
 
 // デバッグで Println(a) できるようにするために定義しておく; ユーザへの表示の際は使わない

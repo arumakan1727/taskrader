@@ -74,8 +74,27 @@ func fetchAssignmentsPageHTML(logger *log.Logger) (string, error) {
 	}
 
 	logger.Println("Waiting assignment list ...")
+	if err := waitUntilAssignmentListVisible(page, 10*time.Second, logger); err != nil {
+		page.SwitchToParentFrame()
+
+		logger.Println("Retry wwitching to assignments tab ...")
+		if err := clickElemBySelector(page, selectorAssignmentTabBtn, 5*time.Second); err != nil {
+			return "", err
+		}
+		time.Sleep(3 * time.Second)
+		if err := page.First(selectorIFrame).SwitchToFrame(); err != nil {
+			return "", err
+		}
+		logger.Println("Waiting assignment list ...")
+		if err := waitUntilAssignmentListVisible(page, 10*time.Second, logger); err != nil {
+			return "", err
+		}
+	}
+	return page.HTML()
+}
+
+func waitUntilAssignmentListVisible(page *agouti.Page, timeout time.Duration, logger *log.Logger) error {
 	startTime := time.Now()
-	timeout := 15 * time.Second
 	for {
 		cards := page.First(selectorAssignmentList).All(selectorAssignmentCard)
 		count, err := cards.Count()
@@ -84,12 +103,11 @@ func fetchAssignmentsPageHTML(logger *log.Logger) (string, error) {
 			break
 		}
 		if time.Since(startTime) > timeout {
-			return "", fmt.Errorf("assignment-card cannot be found")
+			return fmt.Errorf("timeout: assignment-card cannot be found")
 		}
 		time.Sleep(time.Second)
 	}
-
-	return page.HTML()
+	return nil
 }
 
 func scrapeAssignmentList(html string, logger *log.Logger) ([]Assignment, error) {
@@ -104,7 +122,7 @@ func scrapeAssignmentList(html string, logger *log.Logger) ([]Assignment, error)
 	}
 
 	cardElems := listContainer.Find(`a > div[data-test="assignment-card"]`)
-	log.Printf("cardElemes.Length() = %d\n", cardElems.Length())
+	logger.Printf("cardElemes.Length() = %d\n", cardElems.Length())
 
 	res := make([]Assignment, 0, cardElems.Length())
 	listContainer.Find(`a > div[data-test="assignment-card"]`).Each(func(i int, card *goquery.Selection) {
