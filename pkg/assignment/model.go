@@ -45,5 +45,5 @@ type Error struct {
 }
 
 func (e *Error) Error() string {
-	return fmt.Sprintf("@%s: %s", e.Origin, e.Err.Error())
+	return fmt.Sprintf("%s: %s", e.Origin, e.Err.Error())
 }
