@@ -81,19 +81,31 @@ func dummyFetchAssignments(auth *cred.Credential) ([]*assignment.Assignment, []*
 				Origin:   assignment.OrigTeams,
 				Title:    "当日課題rp99必須課題",
 				Course:   "応用プログラミングC",
+				Deadline: addDateHourMinune(today, 0, 40, 55),
+			},
+			{
+				Origin:   assignment.OrigTeams,
+				Title:    "当日課題rp99必須課題",
+				Course:   "応用プログラミングC",
 				Deadline: addDateHourMinune(today, 0, -5, 0),
 			},
 			{
 				Origin:   assignment.OrigTeams,
 				Title:    "当日課題rp99必須課題",
 				Course:   "応用プログラミングC",
-				Deadline: addDateHourMinune(today, 3, 0, -1),
+				Deadline: now.Add(50 * time.Minute),
 			},
 			{
 				Origin:   assignment.OrigTeams,
 				Title:    "当日課題rp99必須課題",
 				Course:   "応用プログラミングC",
-				Deadline: addDateHourMinune(today, 2, 23, 55),
+				Deadline: now.Add(24 * time.Hour),
+			},
+			{
+				Origin:   assignment.OrigTeams,
+				Title:    "当日課題rp99必須課題",
+				Course:   "応用プログラミングC",
+				Deadline: now.Add(48 * time.Hour),
 			},
 		}
 	}
