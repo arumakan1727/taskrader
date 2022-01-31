@@ -17,7 +17,7 @@ type RespSimpleErr struct {
 }
 
 type RespLoginStatus struct {
-	GakujoLogined bool `json:"gakujo_logined"`
-	EdstemLogined bool `json:"edstem_logined"`
-	TeamsLogined  bool `json:"teams_logined"`
+	GakujoLogined bool `json:"gakujo"`
+	EdstemLogined bool `json:"edstem"`
+	TeamsLogined  bool `json:"teams"`
 }
