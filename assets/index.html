@@ -35,11 +35,15 @@
       margin-bottom: 12px;
     }
 
+    .ml-1 {
+      margin-left: 4px;
+    }
+
     .ml-4 {
       margin-left: 16px;
     }
 
-    mr-4 {
+    .mr-4 {
       margin-right: 16px;
     }
 
@@ -52,9 +56,34 @@
       display: flex;
     }
 
-    .text-red {
-      color: red;
+    .text-black {
+      color: #000;
     }
+
+    .text-red {
+      color: #ff2424;
+    }
+
+    .text-orange {
+      color: #d76300;
+    }
+
+    .text-white {
+      color: #fff;
+    }
+
+    .bg-black {
+      background: #000;
+    }
+
+    .bg-red {
+      background: #ff2424;
+    }
+
+    .bg-orange {
+      background: darkorange;
+    }
+
 
     .centering-flex-container {
       display: flex;
@@ -68,6 +97,12 @@
 
     .h-100 {
       height: 100%;
+    }
+
+    .pill {
+      padding: .25rem .5rem;
+      border-radius: 999px;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -149,9 +184,29 @@
                     <md-table-cell md-label="課題名" md-sort-by="title">{{ item.title }}</md-table-cell>
                     <md-table-cell md-label="科目" md-sort-by="course">{{ item.course }}</md-table-cell>
                     <md-table-cell md-label="締め切り" md-sort-by="due">
-                      {{ fmtDue(item.due) }}
+                      <template v-if="item.remHours < 0">
+                        <span class="text-red">{{ item.fmtDue }}</span>
+                        <span class="pill text-red bg-black ml-1">締め切り超過</span>
+                      </template>
+                      <template v-else-if="item.remHours <= 1">
+                        <span class="text-red">{{ item.fmtDue }}</span>
+                        <span class="pill text-white bg-red ml-1">残り{{ item.remHours * 60 ^ 0 }}分</span>
+                      </template>
+                      <template v-else-if="item.remHours <= 24">
+                        <span class="text-red">{{ item.fmtDue }}</span>
+                        <span class="pill text-white bg-red ml-1">残り{{ item.remHours ^ 0 }}時間</span>
+                      </template>
+                      <template v-else-if="item.remHours <= 48">
+                        <span class="text-orange">{{ item.fmtDue }}</span>
+                        <span class="pill text-white bg-orange ml-1">残り{{ item.remHours ^ 0 }}時間</span>
+                      </template>
+                      <template v-else>
+                        <span>{{ item.fmtDue }}</span>
+                      </template>
                     </md-table-cell>
-                    <md-table-cell md-label="提出先" md-sort-by="origin">{{ item.origin }}</md-table-cell>
+                    <md-table-cell md-label="提出先" md-sort-by="origin">
+                      <span class="">{{ item.origin }}</span>
+                    </md-table-cell>
                   </md-table-row>
                 </md-table>
               </div>

@@ -1,7 +1,7 @@
 const API_ORIGIN = location.origin;
 const autoFetch = true;
 
-const DAY_TABLE =  ['日', '月', '火', '水', '木', '金', '土'];
+const DAY_TABLE = ['日', '月', '火', '水', '木', '金', '土'];
 
 function zeroPadding(value, width) {
   return String(value).padStart(width, '0');
@@ -37,8 +37,13 @@ const app = new Vue({
       this.state.fetchingAss = true;
       return axios.get(API_ORIGIN + '/api/assignments')
         .then(resp => {
-          let ass = resp.data.assignments;
-          ass.forEach(a => a.due = new Date(a.due));
+          const ass = resp.data.assignments;
+          const now = new Date();
+          ass.forEach(a => {
+            a.due = new Date(a.due);
+            a.fmtDue = this.fmtDue(a.due, now);
+            a.remHours = (a.due - now) / 36e5;
+          });
           this.assignments = ass;
           this.assErrors = resp.data.errors;
         })
@@ -47,7 +52,6 @@ const app = new Vue({
         })
         .finally(() => {
           this.state.fetchingAss = false;
-          this.state.now = new Date();
         })
     },
     fetchLoginStatus() {
@@ -59,7 +63,7 @@ const app = new Vue({
           console.error(err);
         })
     },
-    fmtDue(d) {
+    fmtDue(d, now) {
       let YYYY = d.getFullYear();
       if (YYYY >= 9999) return "締切不明"
 
@@ -77,8 +81,8 @@ const app = new Vue({
         DD = yesterday.getDate();
       }
 
-      let res = `${MM+1}月${DD}日 (${day}) ${zeroPadding(hh, 2)}:${zeroPadding(mm, 2)}`;
-      return (YYYY !== this.state.now.getFullYear()) ? (YYYY + '年' + res) : res;
+      let res = `${MM + 1}月${DD}日 (${day}) ${zeroPadding(hh, 2)}:${zeroPadding(mm, 2)}`;
+      return (YYYY !== now.getFullYear()) ? (YYYY + '年' + res) : res;
     },
     sortAssignments(ass) {
       const key = this.sorting.key;
@@ -97,7 +101,6 @@ const app = new Vue({
       tab: 'HOME',
       fetchingAss: false,
       puttingAuth: false,
-      now: new Date(),
     },
     sorting: {
       key: 'due',
