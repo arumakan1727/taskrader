@@ -12,9 +12,11 @@
     :root {
       --md-theme-default-primary: #008fce;
     }
+
     .md-empty-state {
       max-width: 470px;
     }
+
     .min-90vh {
       min-height: 90vh;
     }
@@ -60,11 +62,46 @@
 
         <md-app-content class="min-90vh">
           <template v-if="state.tab === 'HOME'">
-            <md-empty-state v-if="nothingLogined" md-rounded :md-size="470" md-icon="devices_other"
+            <h1 class="md-display-1">ホーム</h1>
+
+            <div v-if="!state.initialized">
+            </div>
+
+            <md-empty-state v-else-if="nothingLogined" md-rounded :md-size="470" md-icon="devices_other"
               md-label="認証情報が登録されていません" md-description="まずは学情や EdStem, Teams にログインするためのパスワード等を登録してください。">
-              <md-button class="md-primary md-raised">認証情報の登録画面へ</md-button>
+              <md-button class="md-primary md-raised" @click="switchTo('SETTING')">認証情報の登録画面へ</md-button>
             </md-empty-state>
+
+            <div v-else>
+              <md-table v-model="assignments" md-sort="due" md-sort-order="asc" md-card md-fixed-header>
+                <md-table-toolbar>
+                  <div class="md-toolbar-section-start">
+                    <h1 class="md-title">未提出課題</h1>
+                  </div>
+                  <div class="md-toolbar-section-end">
+                    <md-button :disabled="state.fetchingAss" class="md-raised md-primary">
+                      <md-icon>refresh</md-icon> 課題一覧を再取得する
+                    </md-button>
+                  </div>
+                </md-table-toolbar>
+
+                <md-table-empty-state v-if="assignments.length === 0" md-label="未提出の課題はありません🎉"
+                  md-description="未提出課題は0件です。お疲れ様でした！">
+                </md-table-empty-state>
+                <md-table-empty-state v-else md-label="検索結果は0件です" md-description="絞り込みの検索条件を変えてみてください。">
+                </md-table-empty-state>
+
+                <md-table-row slot="md-table-row" slot-scope="{ item }">
+                  <md-table-cell md-label="課題名">{{ item.title }}</md-table-cell>
+                  <md-table-cell md-label="科目" md-sort-by="course">{{ item.course }}</md-table-cell>
+                  <md-table-cell md-label="締め切り" md-sort-by="due">{{ item.due }}</md-table-cell>
+                  <md-table-cell md-label="提出先" md-sort-by="origin">{{ item.origin }}</md-table-cell>
+                </md-table-row>
+              </md-table>
+            </div>
+
           </template>
+
           <template v-else-if="state.tab === 'SETTING'">
 
           </template>
@@ -73,64 +110,8 @@
     </div>
   </div>
 
+  <script defer src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script defer src="https://unpkg.com/vue"></script>
+  <script defer src="https://unpkg.com/vue-material"></script>
+  <script defer src="/file/main.js"></script>
 </body>
-
-<script src="https://unpkg.com/vue"></script>
-<script src="https://unpkg.com/vue-material"></script>
-<script>
-  Vue.use(VueMaterial.default);
-  const App = new Vue({
-    el: '#app',
-    created() {
-      console.log("Created!")
-    },
-    computed: {
-      nothingLogined() {
-        return !this.logined.gakujo && !this.logined.edstem && !this.logined.teams;
-      }
-    },
-    methods: {
-      toggleMenu() {
-        this.state.menuVisible = !this.state.menuVisible;
-      },
-      switchTo(tabID) {
-        this.state.tab = tabID;
-      }
-    },
-    data: () => ({
-      state: {
-        menuVisible: false,
-        tab: 'HOME',
-        fetching_ass: false,
-        putting_auth: false,
-      },
-      assignments: [
-        {
-          origin: "学情",
-          title: "最終レポート",
-          course: "計算理論",
-          due: new Date('2022-01-30T23:55:00+0900'),
-        },
-        {
-          origin: "EdStem",
-          title: "小レポート99",
-          course: "データベースシステム論",
-          due: new Date('9999-12-31T23:59:59Z'),
-        },
-      ],
-      assErrors: [
-        {
-          origin: "Teams",
-          message: "email, password が空です"
-        },
-      ],
-      logined: {
-        gakujo: false,
-        edstem: false,
-        teams: false,
-      }
-    }),
-  });
-</script>
-
-</html>

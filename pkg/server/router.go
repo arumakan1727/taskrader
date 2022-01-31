@@ -29,6 +29,10 @@ func NewEngine() *gin.Engine {
 	r := gin.Default()
 	r.SetTrustedProxies(nil)
 
+	r.GET("/", func(c *gin.Context) {
+		c.Redirect(http.StatusMovedPermanently, "/taskrader")
+	})
+
 	apiRouter := r.Group("/api")
 	{
 		apiRouter.GET("/assignment", getAssignments)
