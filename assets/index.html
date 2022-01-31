@@ -96,6 +96,7 @@
     .accepted .md-icon {
       color: darkgreen !important;
     }
+
     .not-accepted,
     .not-accepted .md-icon {
       color: #d76300 !important;
@@ -116,6 +117,10 @@
       height: 100%;
     }
 
+    .pre-wrap {
+      white-space: pre-wrap;
+    }
+
     .pill {
       padding: .25rem .5rem;
       border-radius: 999px;
@@ -134,6 +139,11 @@
     .auth-header-wrapper {
       display: flex;
       justify-content: space-between;
+    }
+
+    .auth-button-wrapper {
+      display: flex;
+      justify-content: center;
     }
   </style>
 </head>
@@ -258,69 +268,99 @@
               <div class="viewport mb-10 md-elevation-5">
                 <md-toolbar :md-elevation="1" class="auth-header-wrapper">
                   <span class="md-title">学情</span>
-                  <login-status :logined="auth.gakujo.accepted"></login-status>
+                  <login-status :logined="auth.gakujo.accepted" :verifying="state.puttingGakujoAuth"></login-status>
                 </md-toolbar>
-                <md-list class="md-double-line">
+                <md-list class="">
                   <md-list-item>
                     <md-field>
                       <md-icon class="md-primary">person</md-icon>
                       <label>Username</label>
-                      <md-input v-model="auth.gakujo.username"></md-input>
+                      <md-input v-model="auth.gakujo.username" :disabled="state.puttingGakujoAuth"></md-input>
                     </md-field>
                   </md-list-item>
                   <md-list-item>
                     <md-field>
                       <md-icon class="md-primary">vpn_key</md-icon>
                       <label>Password</label>
-                      <md-input type="password" v-model="auth.gakujo.password"></md-input>
+                      <md-input type="password" v-model="auth.gakujo.password" :disabled="state.puttingGakujoAuth">
+                      </md-input>
                     </md-field>
                   </md-list-item>
+
+                  <md-list-item v-if="auth.gakujo.errmsg">
+                    <div class="text-red pre-wrap">{{ auth.gakujo.errmsg }}</div>
+                  </md-list-item>
+                  <div class="auth-button-wrapper">
+                    <md-button class="md-primary md-raised" @click="putGakujoAuth" :disabled="state.puttingGakujoAuth">
+                      登録
+                    </md-button>
+                  </div>
                 </md-list>
               </div>
 
               <div class="viewport mb-10 md-elevation-5">
                 <md-toolbar :md-elevation="1" class="auth-header-wrapper">
                   <span class="md-title">EdStem</span>
-                  <login-status :logined="auth.edstem.accepted"></login-status>
+                  <login-status :logined="auth.edstem.accepted" :verifying="state.puttingEdstemAuth"></login-status>
                 </md-toolbar>
-                <md-list class="md-double-line">
+                <md-list class="">
                   <md-list-item>
                     <md-field>
                       <md-icon class="md-primary">email</md-icon>
                       <label>Email</label>
-                      <md-input v-model="auth.edstem.email"></md-input>
+                      <md-input type="email" v-model="auth.edstem.email" :disabled="state.puttingEdstemAuth"></md-input>
                     </md-field>
                   </md-list-item>
                   <md-list-item>
                     <md-field>
                       <md-icon class="md-primary">vpn_key</md-icon>
                       <label>Password</label>
-                      <md-input type="password" v-model="auth.edstem.password"></md-input>
+                      <md-input type="password" v-model="auth.edstem.password" :disabled="state.puttingEdstemAuth">
+                      </md-input>
                     </md-field>
                   </md-list-item>
+
+                  <md-list-item v-if="auth.edstem.errmsg">
+                    <div class="text-red pre-wrap">{{ auth.edstem.errmsg }}</div>
+                  </md-list-item>
+                  <div class="auth-button-wrapper">
+                    <md-button class="md-primary md-raised" @click="putEdstemAuth" :disabled="state.puttingEdstemAuth">
+                      登録
+                    </md-button>
+                  </div>
                 </md-list>
               </div>
 
               <div class="viewport mb-10 md-elevation-5">
                 <md-toolbar :md-elevation="1" class="auth-header-wrapper">
                   <span class="md-title">Teams</span>
-                  <login-status :logined="auth.teams.accepted"></login-status>
+                  <login-status :logined="auth.teams.accepted" :verifying="state.puttingTeamsAuth"></login-status>
                 </md-toolbar>
-                <md-list class="md-double-line">
+                <md-list class="">
                   <md-list-item>
                     <md-field>
                       <md-icon class="md-primary">email</md-icon>
                       <label>Email</label>
-                      <md-input v-model="auth.teams.email"></md-input>
+                      <md-input type="email" v-model="auth.teams.email" :disabled="state.puttingTeamsAuth"></md-input>
                     </md-field>
                   </md-list-item>
                   <md-list-item>
                     <md-field>
                       <md-icon class="md-primary">vpn_key</md-icon>
                       <label>Password</label>
-                      <md-input type="password" v-model="auth.teams.password"></md-input>
+                      <md-input type="password" v-model="auth.teams.password" :disabled="state.puttingTeamsAuth">
+                      </md-input>
                     </md-field>
                   </md-list-item>
+
+                  <md-list-item v-if="auth.teams.errmsg">
+                    <div class="text-red pre-wrap">{{ auth.teams.errmsg }}</div>
+                  </md-list-item>
+                  <div class="auth-button-wrapper">
+                    <md-button class="md-primary md-raised" @click="putTeamsAuth" :disabled="state.puttingTeamsAuth">
+                      登録
+                    </md-button>
+                  </div>
                 </md-list>
               </div>
             </section>

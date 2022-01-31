@@ -10,9 +10,15 @@ function zeroPadding(value, width) {
 Vue.component('login-status', {
   props: {
     logined: Boolean,
+    verifying: Boolean,
   },
   template: `
-  <div v-if="logined" class="accepted">
+
+  <div v-if="verifying">
+    <md-progress-spinner style="vertical-align:middle" :md-diameter="24" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+    <span class="ml-1">ログイン試行中...</span>
+  </div>
+  <div v-else-if="logined" class="accepted">
     <md-icon>check_circle</md-icon> <span>登録済み</span>
   </div>
   <div v-else class="not-accepted">
@@ -24,6 +30,43 @@ Vue.component('login-status', {
 Vue.use(VueMaterial.default);
 const app = new Vue({
   el: '#app',
+  data: () => ({
+    state: {
+      initialized: false,
+      menuVisible: false,
+      tab: 'SETTING',
+      fetchingAss: false,
+      puttingGakujoAuth: false,
+      puttingEdstemAuth: false,
+      puttingTeamsAuth: false,
+    },
+    sorting: {
+      key: 'due',
+      ord: 'asc',
+    },
+    assignments: [],
+    assErrors: [],
+    auth: {
+      gakujo: {
+        username: "",
+        password: "",
+        accepted: false,
+        errmsg: "",
+      },
+      edstem: {
+        email: "",
+        password: "",
+        accepted: false,
+        errmsg: "",
+      },
+      teams: {
+        email: "",
+        password: "",
+        accepted: false,
+        errmsg: "",
+      },
+    }
+  }),
   mounted() {
     this.fetchAuth().then(() => {
       if (!this.nothingLogined && autoFetch) {
@@ -36,6 +79,15 @@ const app = new Vue({
     })
   },
   computed: {
+    gakujoAuthEmpty() {
+      return !this.auth.gakujo.username || !this.auth.gakujo.password;
+    },
+    edstemAuthEmpty() {
+      return !this.auth.edstem.email || !this.auth.edstem.password;
+    },
+    teamsAuthEmpty() {
+      return !this.auth.teams.email || !this.auth.teams.password;
+    },
     nothingLogined() {
       const a = this.auth;
       return !a.gakujo.accepted && !a.edstem.accepted && !a.teams.accepted;
@@ -72,13 +124,90 @@ const app = new Vue({
     fetchAuth() {
       return axios.get(API_ORIGIN + '/api/auth')
         .then(resp => {
-          this.auth = resp.data;
+          const g = resp.data.gakujo;
+          const e = resp.data.edstem;
+          const t = resp.data.teams;
+          this.auth.gakujo.username = g.username;
+          this.auth.gakujo.password = g.password;
+          this.auth.edstem.email = e.email;
+          this.auth.edstem.password = e.password;
+          this.auth.teams.email = t.email;
+          this.auth.teams.password = t.password;
           this.auth.gakujo.accepted = Boolean(this.auth.gakujo.username && this.auth.gakujo.password);
           this.auth.edstem.accepted = Boolean(this.auth.edstem.email && this.auth.edstem.password);
           this.auth.teams.accepted = Boolean(this.auth.teams.email && this.auth.teams.password);
         })
         .catch(err => {
           console.error(err);
+        })
+    },
+    putGakujoAuth() {
+      if (this.gakujoAuthEmpty) {
+        this.auth.gakujo.errmsg = "Username または Password が空です";
+        return;
+      }
+      this.state.puttingGakujoAuth = true;
+      this.auth.gakujo.errmsg = "";
+
+      axios.put(API_ORIGIN + '/api/auth/gakujo', {
+        username: this.auth.gakujo.username,
+        password: this.auth.gakujo.password,
+      })
+        .then(resp => {
+          if (resp.data.errmsg) {
+            this.auth.gakujo.errmsg = resp.data.errmsg;
+          } else {
+            this.auth.gakujo.accepted = true;
+          }
+        })
+        .finally(() => {
+          this.state.puttingGakujoAuth = false;
+        })
+    },
+    putEdstemAuth() {
+      if (this.edstemAuthEmpty) {
+        this.auth.edstem.errmsg = "Email または Password が空です";
+        return;
+      }
+      this.state.puttingEdstemAuth = true;
+      this.auth.edstem.errmsg = "";
+
+      axios.put(API_ORIGIN + '/api/auth/edstem', {
+        email: this.auth.edstem.email,
+        password: this.auth.edstem.password,
+      })
+        .then(resp => {
+          if (resp.data.errmsg) {
+            this.auth.edstem.errmsg = resp.data.errmsg;
+          } else {
+            this.auth.edstem.accepted = true;
+          }
+        })
+        .finally(() => {
+          this.state.puttingEdstemAuth = false;
+        })
+    },
+    putTeamsAuth() {
+      if (this.teamsAuthEmpty) {
+        this.auth.teams.errmsg = "Email または Password が空です";
+        return;
+      }
+      this.state.puttingTeamsAuth = true;
+      this.auth.teams.errmsg = "";
+
+      axios.put(API_ORIGIN + '/api/auth/teams', {
+        email: this.auth.teams.email,
+        password: this.auth.teams.password,
+      })
+        .then(resp => {
+          if (resp.data.errmsg) {
+            this.auth.teams.errmsg = resp.data.errmsg;
+          } else {
+            this.auth.teams.accepted = true;
+          }
+        })
+        .finally(() => {
+          this.state.puttingTeamsAuth = false;
         })
     },
     fmtDue(d, now) {
@@ -112,36 +241,4 @@ const app = new Vue({
       }
     },
   },
-  data: () => ({
-    state: {
-      initialized: false,
-      menuVisible: false,
-      tab: 'SETTING',
-      fetchingAss: false,
-      puttingAuth: false,
-    },
-    sorting: {
-      key: 'due',
-      ord: 'asc',
-    },
-    assignments: [],
-    assErrors: [],
-    auth: {
-      gakujo: {
-        username: "",
-        password: "",
-        accepted: false,
-      },
-      edstem: {
-        email: "",
-        password: "",
-        accepted: false,
-      },
-      teams: {
-        email: "",
-        password: "",
-        accepted: false,
-      },
-    }
-  }),
 });
