@@ -64,7 +64,7 @@ func funcGetAssignments(assignmentsSupplyer AssignmentsSupplyer) func(*gin.Conte
 		for _, e := range errs {
 			resp.Errors = append(resp.Errors, RespAssErr{
 				Origin:  string(e.Origin),
-				Message: e.Error(),
+				Message: e.Err.Error(),
 			})
 		}
 		c.JSON(http.StatusOK, &resp)
