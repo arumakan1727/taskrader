@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width,initial-scale=1,minimal-ui" name="viewport">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Material+Icons">
+  <link rel="stylesheet" href="https://unpkg.com/vue-material/dist/vue-material.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/vue-material/dist/theme/default.css">
+  <title>TaskRader</title>
+  <style>
+    :root {
+      --md-theme-default-primary: #008fce;
+    }
+    .md-empty-state {
+      max-width: 470px;
+    }
+    .min-90vh {
+      min-height: 90vh;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="page-container">
+      <md-app>
+        <md-app-toolbar class="md-primary">
+          <md-button class="md-icon-button" @click="toggleMenu" v-if="!state.menuVisible">
+            <md-icon>menu</md-icon>
+          </md-button>
+          <span class="md-title">TaskRader</span>
+        </md-app-toolbar>
+
+        <md-app-drawer :md-active.sync="state.menuVisible" md-persistent="mini" style="width:200px;">
+          <md-toolbar class="md-transparent" md-elevation="0">
+            <span>メニュー</span>
+            <div class="md-toolbar-section-end">
+              <md-button class="md-icon-button md-dense" @click="toggleMenu">
+                <md-icon>keyboard_arrow_left</md-icon>
+              </md-button>
+            </div>
+          </md-toolbar>
+
+          <md-list>
+            <md-list-item @click="switchTo('HOME')">
+              <md-icon>home</md-icon>
+              <span class="md-list-item-text">ホーム</span>
+            </md-list-item>
+            <md-list-item @click="switchTo('SETTING')">
+              <md-icon>settings</md-icon>
+              <span class="md-list-item-text">設定</span>
+            </md-list-item>
+            <md-list-item>
+              <md-icon>help</md-icon>
+              <span class="md-list-item-text">ヘルプ</span>
+            </md-list-item>
+          </md-list>
+        </md-app-drawer>
+
+        <md-app-content class="min-90vh">
+          <template v-if="state.tab === 'HOME'">
+            <md-empty-state v-if="nothingLogined" md-rounded :md-size="470" md-icon="devices_other"
+              md-label="認証情報が登録されていません" md-description="まずは学情や EdStem, Teams にログインするためのパスワード等を登録してください。">
+              <md-button class="md-primary md-raised">認証情報の登録画面へ</md-button>
+            </md-empty-state>
+          </template>
+          <template v-else-if="state.tab === 'SETTING'">
+
+          </template>
+        </md-app-content>
+      </md-app>
+    </div>
+  </div>
+
+</body>
+
+<script src="https://unpkg.com/vue"></script>
+<script src="https://unpkg.com/vue-material"></script>
+<script>
+  Vue.use(VueMaterial.default);
+  const App = new Vue({
+    el: '#app',
+    created() {
+      console.log("Created!")
+    },
+    computed: {
+      nothingLogined() {
+        return !this.logined.gakujo && !this.logined.edstem && !this.logined.teams;
+      }
+    },
+    methods: {
+      toggleMenu() {
+        this.state.menuVisible = !this.state.menuVisible;
+      },
+      switchTo(tabID) {
+        this.state.tab = tabID;
+      }
+    },
+    data: () => ({
+      state: {
+        menuVisible: false,
+        tab: 'HOME',
+        fetching_ass: false,
+        putting_auth: false,
+      },
+      assignments: [
+        {
+          origin: "学情",
+          title: "最終レポート",
+          course: "計算理論",
+          due: new Date('2022-01-30T23:55:00+0900'),
+        },
+        {
+          origin: "EdStem",
+          title: "小レポート99",
+          course: "データベースシステム論",
+          due: new Date('9999-12-31T23:59:59Z'),
+        },
+      ],
+      assErrors: [
+        {
+          origin: "Teams",
+          message: "email, password が空です"
+        },
+      ],
+      logined: {
+        gakujo: false,
+        edstem: false,
+        teams: false,
+      }
+    }),
+  });
+</script>
+
+</html>
