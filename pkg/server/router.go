@@ -16,6 +16,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type AssignmentsSupplyer = func(auth *cred.Credential) ([]*assignment.Assignment, []*assignment.Error)
+
 var (
 	authFilepath    string
 	errAuthFilepath error
@@ -25,7 +27,7 @@ func init() {
 	authFilepath, errAuthFilepath = config.TaskraderCredentialPath()
 }
 
-func NewEngine() *gin.Engine {
+func NewEngine(assignmentsSupplyer AssignmentsSupplyer) *gin.Engine {
 	r := gin.Default()
 	r.SetTrustedProxies(nil)
 
@@ -35,7 +37,7 @@ func NewEngine() *gin.Engine {
 
 	apiRouter := r.Group("/api")
 	{
-		apiRouter.GET("/assignment", getAssignments)
+		apiRouter.GET("/assignment", funcGetAssignments(assignmentsSupplyer))
 		apiRouter.GET("/auth/status", getAuthStatus)
 		apiRouter.PUT("/auth/gakujo", putAuthGakujo)
 		apiRouter.PUT("/auth/edstem", putAuthEdstem)
@@ -44,27 +46,29 @@ func NewEngine() *gin.Engine {
 	return r
 }
 
-func getAssignments(c *gin.Context) {
-	if errAuthFilepath != nil {
-		respAuthPathErr(c)
-		return
-	}
+func funcGetAssignments(assignmentsSupplyer AssignmentsSupplyer) func(*gin.Context) {
+	return func(c *gin.Context) {
+		if errAuthFilepath != nil {
+			respAuthPathErr(c)
+			return
+		}
 
-	auth := cred.LoadFromFileOrEmpty(authFilepath)
+		auth := cred.LoadFromFileOrEmpty(authFilepath)
 
-	ass, errs := assignment.FetchAll(auth)
-	view.SortAssignments(ass)
-	resp := RespAssignmentsAndErrors{
-		Ass:    ass,
-		Errors: make([]RespAssErr, 0, len(errs)),
+		ass, errs := assignmentsSupplyer(auth)
+		view.SortAssignments(ass)
+		resp := RespAssignmentsAndErrors{
+			Ass:    ass,
+			Errors: make([]RespAssErr, 0, len(errs)),
+		}
+		for _, e := range errs {
+			resp.Errors = append(resp.Errors, RespAssErr{
+				Origin:  string(e.Origin),
+				Message: e.Error(),
+			})
+		}
+		c.JSON(http.StatusOK, &resp)
 	}
-	for _, e := range errs {
-		resp.Errors = append(resp.Errors, RespAssErr{
-			Origin:  string(e.Origin),
-			Message: e.Error(),
-		})
-	}
-	c.JSON(http.StatusOK, &resp)
 }
 
 func getAuthStatus(c *gin.Context) {
