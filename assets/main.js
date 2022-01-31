@@ -1,8 +1,8 @@
 const API_ORIGIN = location.origin;
-const autoFetch = false;
+const autoFetch = true;
 
 Vue.use(VueMaterial.default);
-const App = new Vue({
+const app = new Vue({
   el: '#app',
   mounted() {
     this.fetchLoginStatus().then(() => {
@@ -33,6 +33,7 @@ const App = new Vue({
           console.error(err);
         })
         .finally(() => {
+          console.log("finished fetching asignments")
           this.state.fetchingAss = false;
         })
     },

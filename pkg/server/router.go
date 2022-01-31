@@ -37,7 +37,7 @@ func NewEngine(assignmentsSupplyer AssignmentsSupplyer) *gin.Engine {
 
 	apiRouter := r.Group("/api")
 	{
-		apiRouter.GET("/assignment", funcGetAssignments(assignmentsSupplyer))
+		apiRouter.GET("/assignments", funcGetAssignments(assignmentsSupplyer))
 		apiRouter.GET("/auth/status", getAuthStatus)
 		apiRouter.PUT("/auth/gakujo", putAuthGakujo)
 		apiRouter.PUT("/auth/edstem", putAuthEdstem)

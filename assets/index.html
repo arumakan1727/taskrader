@@ -17,8 +17,35 @@
       max-width: 470px;
     }
 
-    .min-90vh {
-      min-height: 90vh;
+    .min-95vh {
+      min-height: 95vh;
+    }
+
+    .overlay-dark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, .2);
+    }
+
+    .ml-4 {
+      margin-left: 16px;
+    }
+
+    mr-4 {
+      margin-right: 16px;
+    }
+
+    .mx-4 {
+      margin-left: 16px;
+      margin-right: 16px;
+    }
+
+    .d-flex {
+      display: flex;
     }
   </style>
 </head>
@@ -60,7 +87,7 @@
           </md-list>
         </md-app-drawer>
 
-        <md-app-content class="min-90vh">
+        <md-app-content class="min-95vh">
           <template v-if="state.tab === 'HOME'">
             <h1 class="md-display-1">ホーム</h1>
 
@@ -73,31 +100,39 @@
             </md-empty-state>
 
             <div v-else>
-              <md-table v-model="assignments" md-sort="due" md-sort-order="asc" md-card md-fixed-header>
-                <md-table-toolbar>
-                  <div class="md-toolbar-section-start">
-                    <h1 class="md-title">未提出課題</h1>
-                  </div>
-                  <div class="md-toolbar-section-end">
-                    <md-button :disabled="state.fetchingAss" class="md-raised md-primary">
-                      <md-icon>refresh</md-icon> 課題一覧を再取得する
-                    </md-button>
-                  </div>
-                </md-table-toolbar>
+              <md-button @click="fetchAss()" :disabled="state.fetchingAss" class="md-raised md-primary ml-4">
+                <md-icon>refresh</md-icon> 課題一覧を再取得する
+              </md-button>
 
-                <md-table-empty-state v-if="assignments.length === 0" md-label="未提出の課題はありません🎉"
-                  md-description="未提出課題は0件です。お疲れ様でした！">
-                </md-table-empty-state>
-                <md-table-empty-state v-else md-label="検索結果は0件です" md-description="絞り込みの検索条件を変えてみてください。">
-                </md-table-empty-state>
+              <div class="" style="position:relative;">
+                <div v-if="state.fetchingAss" class="overlay-dark mx-4" style="width:calc(100% - 32px);">
+                  <div style="display:flex; justify-content:center; align-items:center; width:100%; height:100%;">
+                    <md-progress-spinner :md-diameter="120" :md-stroke="12" md-mode="indeterminate">
+                    </md-progress-spinner>
+                  </div>
+                </div>
 
-                <md-table-row slot="md-table-row" slot-scope="{ item }">
-                  <md-table-cell md-label="課題名">{{ item.title }}</md-table-cell>
-                  <md-table-cell md-label="科目" md-sort-by="course">{{ item.course }}</md-table-cell>
-                  <md-table-cell md-label="締め切り" md-sort-by="due">{{ item.due }}</md-table-cell>
-                  <md-table-cell md-label="提出先" md-sort-by="origin">{{ item.origin }}</md-table-cell>
-                </md-table-row>
-              </md-table>
+                <md-table v-model="assignments" md-sort="due" md-sort-order="asc" md-card md-fixed-header
+                  :md-height="700">
+                  <md-table-toolbar>
+                    <div class="md-toolbar-section-start">
+                      <h1 class="md-title">未提出課題リスト</h1>
+                    </div>
+                    <div class="md-toolbar-section-end">
+                    </div>
+                  </md-table-toolbar>
+
+                  <md-table-empty-state md-label="未提出の課題はありません🎉" md-description="未提出課題は0件です。お疲れ様でした！">
+                  </md-table-empty-state>
+
+                  <md-table-row slot="md-table-row" slot-scope="{ item }">
+                    <md-table-cell md-label="課題名">{{ item.title }}</md-table-cell>
+                    <md-table-cell md-label="科目" md-sort-by="course">{{ item.course }}</md-table-cell>
+                    <md-table-cell md-label="締め切り" md-sort-by="due">{{ item.due }}</md-table-cell>
+                    <md-table-cell md-label="提出先" md-sort-by="origin">{{ item.origin }}</md-table-cell>
+                  </md-table-row>
+                </md-table>
+              </div>
             </div>
 
           </template>
