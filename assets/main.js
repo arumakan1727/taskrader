@@ -7,11 +7,25 @@ function zeroPadding(value, width) {
   return String(value).padStart(width, '0');
 }
 
+Vue.component('login-status', {
+  props: {
+    logined: Boolean,
+  },
+  template: `
+  <div v-if="logined" class="accepted">
+    <md-icon>check_circle</md-icon> <span>登録済み</span>
+  </div>
+  <div v-else class="not-accepted">
+    <md-icon>warning</md-icon> <span>未登録</span>
+  </div>
+  `
+});
+
 Vue.use(VueMaterial.default);
 const app = new Vue({
   el: '#app',
   mounted() {
-    this.fetchLoginStatus().then(() => {
+    this.fetchAuth().then(() => {
       if (!this.nothingLogined && autoFetch) {
         this.fetchAss().then(() => {
           this.state.initialized = true;
@@ -23,8 +37,9 @@ const app = new Vue({
   },
   computed: {
     nothingLogined() {
-      return !this.logined.gakujo && !this.logined.edstem && !this.logined.teams;
-    }
+      const a = this.auth;
+      return !a.gakujo.accepted && !a.edstem.accepted && !a.teams.accepted;
+    },
   },
   methods: {
     toggleMenu() {
@@ -54,10 +69,13 @@ const app = new Vue({
           this.state.fetchingAss = false;
         })
     },
-    fetchLoginStatus() {
-      return axios.get(API_ORIGIN + '/api/auth/status')
+    fetchAuth() {
+      return axios.get(API_ORIGIN + '/api/auth')
         .then(resp => {
-          this.logined = resp.data;
+          this.auth = resp.data;
+          this.auth.gakujo.accepted = Boolean(this.auth.gakujo.username && this.auth.gakujo.password);
+          this.auth.edstem.accepted = Boolean(this.auth.edstem.email && this.auth.edstem.password);
+          this.auth.teams.accepted = Boolean(this.auth.teams.email && this.auth.teams.password);
         })
         .catch(err => {
           console.error(err);
@@ -98,7 +116,7 @@ const app = new Vue({
     state: {
       initialized: false,
       menuVisible: false,
-      tab: 'HOME',
+      tab: 'SETTING',
       fetchingAss: false,
       puttingAuth: false,
     },
@@ -106,30 +124,24 @@ const app = new Vue({
       key: 'due',
       ord: 'asc',
     },
-    assignments: [
-      {
-        origin: "学情",
-        title: "最終レポート",
-        course: "計算理論",
-        due: '2022-01-30T23:55:00+0900',
+    assignments: [],
+    assErrors: [],
+    auth: {
+      gakujo: {
+        username: "",
+        password: "",
+        accepted: false,
       },
-      {
-        origin: "EdStem",
-        title: "小レポート99",
-        course: "データベースシステム論",
-        due: '9999-12-31T23:59:59Z',
+      edstem: {
+        email: "",
+        password: "",
+        accepted: false,
       },
-    ],
-    assErrors: [
-      {
-        origin: "Teams",
-        message: "email, password が空です"
+      teams: {
+        email: "",
+        password: "",
+        accepted: false,
       },
-    ],
-    logined: {
-      gakujo: false,
-      edstem: false,
-      teams: false,
     }
   }),
 });
