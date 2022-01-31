@@ -34,7 +34,7 @@ const app = new Vue({
     state: {
       initialized: false,
       menuVisible: false,
-      tab: 'SETTING',
+      tab: 'HOME',
       fetchingAss: false,
       puttingGakujoAuth: false,
       puttingEdstemAuth: false,
