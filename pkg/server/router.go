@@ -187,6 +187,8 @@ func respLoginErr(err error, c *gin.Context) {
 		resp.Message = fmt.Sprintf("ログイン失敗: おそらくメールアドレスまたはパスワードを間違えています (email: '%s')", err.Email)
 	case *teams.ErrEmailOrPasswdWrong:
 		resp.Message = fmt.Sprintf("ログイン失敗: おそらくメールアドレスまたはパスワードを間違えています (email: '%s')", err.Email)
+	case *teams.ErrAlreadyLogined:
+		resp.Message = "既にログイン済みです"
 	default:
 		resp.Message = err.Error()
 	}
