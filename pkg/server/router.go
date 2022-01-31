@@ -39,6 +39,7 @@ func NewEngine(assignmentsSupplyer AssignmentsSupplyer) *gin.Engine {
 	{
 		apiRouter.GET("/assignments", funcGetAssignments(assignmentsSupplyer))
 		apiRouter.GET("/auth/status", getAuthStatus)
+		apiRouter.GET("/auth", getAuth)
 		apiRouter.PUT("/auth/gakujo", putAuthGakujo)
 		apiRouter.PUT("/auth/edstem", putAuthEdstem)
 		apiRouter.PUT("/auth/teams", putAuthTeams)
@@ -69,6 +70,15 @@ func funcGetAssignments(assignmentsSupplyer AssignmentsSupplyer) func(*gin.Conte
 		}
 		c.JSON(http.StatusOK, &resp)
 	}
+}
+
+func getAuth(c *gin.Context) {
+	if errAuthFilepath != nil {
+		respAuthPathErr(c)
+		return
+	}
+	auth := cred.LoadFromFileOrEmpty(authFilepath)
+	c.JSON(http.StatusOK, auth)
 }
 
 func getAuthStatus(c *gin.Context) {
