@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width,initial-scale=1,minimal-ui" name="viewport">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Material+Icons">
+  <link rel="stylesheet" href="https://unpkg.com/vue-material/dist/vue-material.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/vue-material/dist/theme/default.css">
+  <title>TaskRader</title>
+  <script>
+    fetch(location.origin + '/ses/enter', {method: 'POST'});
+  </script>
+  <style>
+    :root {
+      --md-theme-default-primary: #008fce;
+    }
+
+    .md-empty-state {
+      max-width: 470px;
+    }
+
+    .min-95vh {
+      min-height: 95vh;
+    }
+
+    .overlay-dark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+      width: 100%;
+      height: 100%;
+      background: rgba(240, 240, 240, .6);
+    }
+
+    .mb-3 {
+      margin-bottom: 12px !important;
+    }
+
+    .mb-10 {
+      margin-bottom: 40px !important;
+    }
+
+    .ml-1 {
+      margin-left: 4px !important;
+    }
+
+    .ml-4 {
+      margin-left: 16px !important;
+    }
+
+    .mr-4 {
+      margin-right: 16px !important;
+    }
+
+    .mr-3 {
+      margin-right: 12px !important;
+    }
+
+    .mx-4 {
+      margin-left: 16px !important;
+      margin-right: 16px !important;
+    }
+
+    .d-flex {
+      display: flex;
+    }
+
+    .text-black {
+      color: #000;
+    }
+
+    .text-red {
+      color: #ff2424;
+    }
+
+    .text-orange {
+      color: #d76300;
+    }
+
+    .text-white {
+      color: #fff;
+    }
+
+    .bg-black {
+      background: #000;
+    }
+
+    .bg-red {
+      background: #ff2424;
+    }
+
+    .bg-orange {
+      background: darkorange;
+    }
+
+    .accepted,
+    .accepted .md-icon {
+      color: darkgreen !important;
+    }
+
+    .not-accepted,
+    .not-accepted .md-icon {
+      color: #d76300 !important;
+    }
+
+
+    .centering-flex-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .w-100 {
+      width: 100%;
+    }
+
+    .h-100 {
+      height: 100%;
+    }
+
+    .pre-wrap {
+      white-space: pre-wrap;
+    }
+
+    .pill {
+      padding: .25rem .5rem;
+      border-radius: 999px;
+      font-weight: bold;
+    }
+
+    .viewport {
+      border: 1px solid rgba(0, 0, 0, .15);
+    }
+
+    .auth-container {
+      max-width: 540px;
+      margin: auto;
+    }
+
+    .auth-header-wrapper {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .auth-button-wrapper {
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="page-container">
+      <md-app>
+        <md-app-toolbar class="md-primary">
+          <md-button class="md-icon-button" @click="toggleMenu" v-if="!state.menuVisible">
+            <md-icon>menu</md-icon>
+          </md-button>
+          <span class="md-title">TaskRader</span>
+        </md-app-toolbar>
+
+        <md-app-drawer :md-active.sync="state.menuVisible" md-persistent="mini" style="width:200px;">
+          <md-toolbar class="md-transparent" md-elevation="0">
+            <span>メニュー</span>
+            <div class="md-toolbar-section-end">
+              <md-button class="md-icon-button md-dense" @click="toggleMenu">
+                <md-icon>keyboard_arrow_left</md-icon>
+              </md-button>
+            </div>
+          </md-toolbar>
+
+          <md-list>
+            <md-list-item @click="switchTo('HOME')">
+              <md-icon>home</md-icon>
+              <span class="md-list-item-text">ホーム</span>
+            </md-list-item>
+            <md-list-item @click="switchTo('SETTING')">
+              <md-icon>settings</md-icon>
+              <span class="md-list-item-text">設定</span>
+            </md-list-item>
+            <!-- <md-list-item>
+              <md-icon>help</md-icon>
+              <span class="md-list-item-text">ヘルプ</span>
+            </md-list-item> -->
+          </md-list>
+        </md-app-drawer>
+
+        <md-app-content class="min-95vh">
+          <template v-if="state.tab === 'HOME'">
+            <h1 class="md-display-1">ホーム</h1>
+
+            <div v-if="!state.initialized" class="centering-flex-container w-100" style="margin-top: 120px">
+              <md-progress-spinner :md-diameter="160" :md-stroke="12" md-mode="indeterminate">
+              </md-progress-spinner>
+            </div>
+
+            <md-empty-state v-else-if="nothingLogined" md-rounded :md-size="470" md-icon="devices_other"
+              md-label="認証情報が登録されていません" md-description="まずは学情や EdStem, Teams にログインするためのパスワード等を登録してください。">
+              <md-button class="md-primary md-raised" @click="switchTo('SETTING')">認証情報の登録画面へ</md-button>
+            </md-empty-state>
+
+            <div v-else>
+              <div class="mx-4" style="display:flex; justify-content:space-between; align-items:center;">
+                <h2 class="md-headline mb-3">{{ assignments.length }}件の未提出課題</h2>
+                <md-button @click="fetchAss()" :disabled="state.fetchingAss" class="md-raised md-primary">
+                  <md-icon>refresh</md-icon> 課題一覧を再取得する
+                </md-button>
+              </div>
+
+              <div class="" style="position:relative;">
+                <div v-if="state.fetchingAss" class="overlay-dark mx-4" style="width:calc(100% - 32px);">
+                  <div class="centering-flex-container w-100 h-100">
+                    <md-progress-spinner :md-diameter="120" :md-stroke="12" md-mode="indeterminate">
+                    </md-progress-spinner>
+                  </div>
+                </div>
+
+                <md-table v-model="assignments" :md-sort.sync="sorting.key" :md-sort-order.sync="sorting.ord" md-card
+                  :md-sort-fn="sortAssignments" md-fixed-header :md-height="500">
+
+                  <md-table-empty-state md-label="未提出の課題はありません🎉" md-description="未提出課題は0件です。お疲れ様でした！">
+                  </md-table-empty-state>
+
+                  <md-table-row slot="md-table-row" slot-scope="{ item }">
+                    <md-table-cell md-label="課題名" md-sort-by="title">{{ item.title }}</md-table-cell>
+                    <md-table-cell md-label="科目" md-sort-by="course">{{ item.course }}</md-table-cell>
+                    <md-table-cell md-label="締め切り" md-sort-by="due">
+                      <template v-if="item.remHours < 0">
+                        <span class="text-red">{{ item.fmtDue }}</span>
+                        <span class="pill text-red bg-black ml-1">締め切り超過</span>
+                      </template>
+                      <template v-else-if="item.remHours <= 1">
+                        <span class="text-red">{{ item.fmtDue }}</span>
+                        <span class="pill text-white bg-red ml-1">残り{{ item.remHours * 60 ^ 0 }}分</span>
+                      </template>
+                      <template v-else-if="item.remHours <= 24">
+                        <span class="text-red">{{ item.fmtDue }}</span>
+                        <span class="pill text-white bg-red ml-1">残り{{ item.remHours ^ 0 }}時間</span>
+                      </template>
+                      <template v-else-if="item.remHours <= 48">
+                        <span class="text-orange">{{ item.fmtDue }}</span>
+                        <span class="pill text-white bg-orange ml-1">残り{{ item.remHours ^ 0 }}時間</span>
+                      </template>
+                      <template v-else>
+                        <span>{{ item.fmtDue }}</span>
+                      </template>
+                    </md-table-cell>
+                    <md-table-cell md-label="提出先" md-sort-by="origin">
+                      <span class="">{{ item.origin }}</span>
+                    </md-table-cell>
+                  </md-table-row>
+                </md-table>
+              </div>
+
+              <div>
+                <ul class="text-red">
+                  <li v-for="err in assErrors">{{ err.origin }} の課題取得でエラー: <strong>{{ err.message }}</strong></li>
+                </ul>
+              </div>
+              <div class="mx-4">
+                Teams の課題取得には Selenium WebDriver を使用します。<br>Ubuntu を使用している場合は、
+                <code style="background:#e3e3e3; padding:.2rem .4rem; border-radius:4px;">sudo apt update &amp;&amp;
+                  sudo apt install -y chromium-chromedriver</code>
+                を実行すればインストールできます。
+              </div>
+            </div>
+
+          </template>
+
+          <template v-else-if="state.tab === 'SETTING'">
+            <section class="auth-container">
+              <h1 class="md-display-1">認証情報の登録</h1>
+
+              <div class="viewport mb-10 md-elevation-5">
+                <md-toolbar :md-elevation="1" class="auth-header-wrapper">
+                  <span class="md-title">学情</span>
+                  <login-status :logined="auth.gakujo.accepted" :verifying="state.puttingGakujoAuth"></login-status>
+                </md-toolbar>
+                <md-list class="">
+                  <md-list-item>
+                    <md-field>
+                      <md-icon class="md-primary">person</md-icon>
+                      <label>Username</label>
+                      <md-input v-model="auth.gakujo.username" :disabled="state.puttingGakujoAuth"></md-input>
+                    </md-field>
+                  </md-list-item>
+                  <md-list-item>
+                    <md-field>
+                      <md-icon class="md-primary">vpn_key</md-icon>
+                      <label>Password</label>
+                      <md-input type="password" v-model="auth.gakujo.password" :disabled="state.puttingGakujoAuth">
+                      </md-input>
+                    </md-field>
+                  </md-list-item>
+
+                  <md-list-item v-if="auth.gakujo.errmsg">
+                    <div class="text-red pre-wrap">{{ auth.gakujo.errmsg }}</div>
+                  </md-list-item>
+                  <div class="auth-button-wrapper">
+                    <md-button class="md-primary md-raised" @click="putGakujoAuth" :disabled="state.puttingGakujoAuth">
+                      登録
+                    </md-button>
+                  </div>
+                </md-list>
+              </div>
+
+              <div class="viewport mb-10 md-elevation-5">
+                <md-toolbar :md-elevation="1" class="auth-header-wrapper">
+                  <span class="md-title">EdStem</span>
+                  <login-status :logined="auth.edstem.accepted" :verifying="state.puttingEdstemAuth"></login-status>
+                </md-toolbar>
+                <md-list class="">
+                  <md-list-item>
+                    <md-field>
+                      <md-icon class="md-primary">email</md-icon>
+                      <label>Email</label>
+                      <md-input type="email" v-model="auth.edstem.email" :disabled="state.puttingEdstemAuth"></md-input>
+                    </md-field>
+                  </md-list-item>
+                  <md-list-item>
+                    <md-field>
+                      <md-icon class="md-primary">vpn_key</md-icon>
+                      <label>Password</label>
+                      <md-input type="password" v-model="auth.edstem.password" :disabled="state.puttingEdstemAuth">
+                      </md-input>
+                    </md-field>
+                  </md-list-item>
+
+                  <md-list-item v-if="auth.edstem.errmsg">
+                    <div class="text-red pre-wrap">{{ auth.edstem.errmsg }}</div>
+                  </md-list-item>
+                  <div class="auth-button-wrapper">
+                    <md-button class="md-primary md-raised" @click="putEdstemAuth" :disabled="state.puttingEdstemAuth">
+                      登録
+                    </md-button>
+                  </div>
+                </md-list>
+              </div>
+
+              <div class="viewport mb-10 md-elevation-5">
+                <md-toolbar :md-elevation="1" class="auth-header-wrapper">
+                  <span class="md-title">Teams</span>
+                  <login-status :logined="auth.teams.accepted" :verifying="state.puttingTeamsAuth"></login-status>
+                </md-toolbar>
+                <md-list class="">
+                  <md-list-item>
+                    <md-field>
+                      <md-icon class="md-primary">email</md-icon>
+                      <label>Email</label>
+                      <md-input type="email" v-model="auth.teams.email" :disabled="state.puttingTeamsAuth"></md-input>
+                    </md-field>
+                  </md-list-item>
+                  <md-list-item>
+                    <md-field>
+                      <md-icon class="md-primary">vpn_key</md-icon>
+                      <label>Password</label>
+                      <md-input type="password" v-model="auth.teams.password" :disabled="state.puttingTeamsAuth">
+                      </md-input>
+                    </md-field>
+                  </md-list-item>
+
+                  <md-list-item v-if="auth.teams.errmsg">
+                    <div class="text-red pre-wrap">{{ auth.teams.errmsg }}</div>
+                  </md-list-item>
+                  <div class="auth-button-wrapper">
+                    <md-button class="md-primary md-raised" @click="putTeamsAuth" :disabled="state.puttingTeamsAuth">
+                      登録
+                    </md-button>
+                  </div>
+                </md-list>
+              </div>
+            </section>
+
+          </template>
+        </md-app-content>
+      </md-app>
+    </div>
+  </div>
+
+  <script defer src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script defer src="https://unpkg.com/vue"></script>
+  <script defer src="https://unpkg.com/vue-material"></script>
+  <script defer src="/file/main.js"></script>
+</body>

@@ -84,6 +84,16 @@ func (c *Credential) SaveToFile(filepath string) error {
 	return ioutil.WriteFile(filepath, bs, 0600)
 }
 
+func (c *Gakujo) IsEmpty() bool {
+	return c.Username == "" || c.Password == ""
+}
+func (c *EdStem) IsEmpty() bool {
+	return c.Email == "" || c.Password == ""
+}
+func (c *Teams) IsEmpty() bool {
+	return c.Email == "" || c.Password == ""
+}
+
 func encrypt(plaintext []byte) ([]byte, error) {
 	key := getKey()
 	nonce := getNonce()

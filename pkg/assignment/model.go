@@ -16,13 +16,13 @@ const (
 
 // 課題を表す共通の型
 type Assignment struct {
-	Origin   Origin    // 課題の出所
-	Title    string    // 課題のタイトル
-	Course   string    // 科目orコース名
-	Deadline time.Time // 課題の締め切り; 不明の場合は UnknownDeadline() を設定する
+	Origin   Origin    `json:"origin"` // 課題の出所
+	Title    string    `json:"title"`  // 課題のタイトル
+	Course   string    `json:"course"` // 科目orコース名
+	Deadline time.Time `json:"due"`    // 課題の締め切り; 不明の場合は UnknownDeadline() を設定する
 }
 
-var _unknownDeadline = time.Unix(1<<60, 999999999)
+var _unknownDeadline = time.Date(9999, 12, 31, 23, 59, 59, 0, time.UTC)
 
 // 不明な締切日時を表す定数
 func UnknownDeadline() time.Time {
@@ -45,5 +45,5 @@ type Error struct {
 }
 
 func (e *Error) Error() string {
-	return fmt.Sprintf("@%s: %s", e.Origin, e.Err.Error())
+	return fmt.Sprintf("%s: %s", e.Origin, e.Err.Error())
 }
