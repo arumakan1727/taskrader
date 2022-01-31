@@ -22,6 +22,8 @@ func newLoginCmd() *cobra.Command {
 		status bool
 	}{}
 
+	credPath, _ := config.TaskraderCredentialPath()
+
 	loginCmd := &cobra.Command{
 		Use:   "login",
 		Short: "ログインのための認証情報を taskrader に登録します",
@@ -29,7 +31,7 @@ func newLoginCmd() *cobra.Command {
 		Long: "ログインのための認証情報を対話形式で taskrader に登録します。\n" +
 			"\n" +
 			"課題情報を取得するには、最初にこのコマンドを使って認証情報を登録しておく必要があります。\n" +
-			"認証情報は手元のPCに暗号化されて保存されます。",
+			"認証情報は手元のPCの " + credPath + " に暗号化されて保存されます。",
 
 		ValidArgs: []string{"gakujo", "edstem", "teams"},
 		Example: `

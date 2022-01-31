@@ -31,6 +31,7 @@ require (
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.17.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/toqueteos/webbrowser v1.2.0 // indirect
 	github.com/ugorji/go/codec v1.2.6 // indirect
 	golang.org/x/crypto v0.0.0-20220128200615-198e4374d7ed // indirect
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect

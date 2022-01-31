@@ -16,7 +16,7 @@ func newListCmd() *cobra.Command {
 	listCmd := &cobra.Command{
 		Use:     "list",
 		Aliases: []string{"ls"},
-		Short:   "統合した課題の一覧をリスト表示します。",
+		Short:   "未提出課題の一覧を表示します",
 		Args:    cobra.NoArgs,
 		Run: func(cmd *cobra.Command, args []string) {
 			if err := runListCmd(cmd, args); err != nil {
@@ -34,6 +34,10 @@ func runListCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	auth := cred.LoadFromFileOrEmpty(credPath)
+	if errs := auth.CheckEmptyField(); len(errs) == 3 {
+		fmt.Println("\n認証情報が未登録です。\n" +
+			"taskrader login コマンドを使って、学情・EdStem・Teamsにログインするためのパスワード等を登録してください。\n")
+	}
 
 	color.Blue("課題を取得中...\n")
 	ass, errs := assignment.FetchAll(auth)

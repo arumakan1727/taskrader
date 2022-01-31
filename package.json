@@ -1,0 +1,11 @@
+{
+  "name": "taskrader",
+  "version": "1.0.0",
+  "repository": "",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "html-minifier": "^4.0.0",
+    "uglify-js": "^3.15.0"
+  }
+}

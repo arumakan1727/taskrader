@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/arumakan1727/taskrader/assets"
 	"github.com/arumakan1727/taskrader/pkg/assignment"
 	"github.com/arumakan1727/taskrader/pkg/clients/edstem"
 	"github.com/arumakan1727/taskrader/pkg/clients/gakujo"
@@ -75,6 +76,15 @@ func NewEngine(assignmentsSupplyer AssignmentsSupplyer) *gin.Engine {
 	}
 
 	return r
+}
+
+func AddAssetsRoute(r *gin.Engine) {
+	r.GET("/taskrader", func(c *gin.Context) {
+		c.Data(http.StatusOK, "text/html", assets.IndexHTML())
+	})
+	r.GET("/file/main.js", func(c *gin.Context) {
+		c.Data(http.StatusOK, "text/javascript", assets.MainJS())
+	})
 }
 
 func funcGetAssignments(assignmentsSupplyer AssignmentsSupplyer) func(*gin.Context) {

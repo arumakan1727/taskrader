@@ -219,7 +219,7 @@
                 </div>
 
                 <md-table v-model="assignments" :md-sort.sync="sorting.key" :md-sort-order.sync="sorting.ord" md-card
-                  :md-sort-fn="sortAssignments" md-fixed-header :md-height="600">
+                  :md-sort-fn="sortAssignments" md-fixed-header :md-height="500">
 
                   <md-table-empty-state md-label="未提出の課題はありません🎉" md-description="未提出課題は0件です。お疲れ様でした！">
                   </md-table-empty-state>
@@ -260,7 +260,7 @@
                   <li v-for="err in assErrors">{{ err.origin }} の課題取得でエラー: <strong>{{ err.message }}</strong></li>
                 </ul>
               </div>
-              <div>
+              <div class="mx-4">
                 Teams の課題取得には Selenium WebDriver を使用します。<br>Ubuntu を使用している場合は、
                 <code style="background:#e3e3e3; padding:.2rem .4rem; border-radius:4px;">sudo apt update &amp;&amp;
                   sudo apt install -y chromium-chromedriver</code>
