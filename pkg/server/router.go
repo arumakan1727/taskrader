@@ -5,6 +5,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/arumakan1727/taskrader/pkg/assignment"
 	"github.com/arumakan1727/taskrader/pkg/clients/edstem"
@@ -44,6 +46,34 @@ func NewEngine(assignmentsSupplyer AssignmentsSupplyer) *gin.Engine {
 		apiRouter.PUT("/auth/edstem", putAuthEdstem)
 		apiRouter.PUT("/auth/teams", putAuthTeams)
 	}
+
+	sesRouter := r.Group("/ses")
+	{
+		entered := make(chan bool, 1)
+
+		sesRouter.POST("/enter", func(c *gin.Context) {
+			c.String(200, "")
+			entered <- true
+		})
+
+		sesRouter.POST("/leave", func(c *gin.Context) {
+			// clear the channel
+			for len(entered) > 0 {
+				<-entered
+			}
+
+			select {
+			case <-entered:
+				c.String(200, "Detected reloading")
+
+			case <-time.After(2 * time.Second):
+				fmt.Println("Shutdown the taskrader server.")
+				os.Exit(0)
+			}
+		})
+
+	}
+
 	return r
 }
 

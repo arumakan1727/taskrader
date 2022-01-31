@@ -8,6 +8,9 @@
   <link rel="stylesheet" href="https://unpkg.com/vue-material/dist/vue-material.min.css">
   <link rel="stylesheet" href="https://unpkg.com/vue-material/dist/theme/default.css">
   <title>TaskRader</title>
+  <script>
+    fetch(location.origin + '/ses/enter', {method: 'POST'});
+  </script>
   <style>
     :root {
       --md-theme-default-primary: #008fce;
@@ -259,7 +262,8 @@
               </div>
               <div>
                 Teams の課題取得には Selenium WebDriver を使用します。<br>Ubuntu を使用している場合は、
-                <code style="background:#e3e3e3; padding:.2rem .4rem; border-radius:4px;">sudo apt update &amp;&amp; sudo apt install -y chromium-chromedriver</code>
+                <code style="background:#e3e3e3; padding:.2rem .4rem; border-radius:4px;">sudo apt update &amp;&amp;
+                  sudo apt install -y chromium-chromedriver</code>
                 を実行すればインストールできます。
               </div>
             </div>

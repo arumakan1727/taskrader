@@ -3,6 +3,10 @@ const autoFetch = true;
 
 const DAY_TABLE = ['日', '月', '火', '水', '木', '金', '土'];
 
+window.onbeforeunload = () => {
+  fetch(API_ORIGIN + '/ses/leave', { method: 'POST' });
+}
+
 function zeroPadding(value, width) {
   return String(value).padStart(width, '0');
 }
