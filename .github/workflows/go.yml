@@ -24,6 +24,9 @@ jobs:
       shell: bash
       run: files=$(gofmt -l .) && echo "${files:-[OK] All files are formatted}" && test -z "$files"
 
+    - name: Create dummy .min files
+      run: touch assets/index.min.html assets/main.min.js
+
     - name: staticcheck
       uses: dominikh/staticcheck-action@v1.1.0
       with:
