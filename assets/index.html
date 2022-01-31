@@ -28,7 +28,11 @@
       z-index: 9999;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, .2);
+      background: rgba(240, 240, 240, .6);
+    }
+
+    .mb-3 {
+      margin-bottom: 12px;
     }
 
     .ml-4 {
@@ -46,6 +50,24 @@
 
     .d-flex {
       display: flex;
+    }
+
+    .text-red {
+      color: red;
+    }
+
+    .centering-flex-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .w-100 {
+      width: 100%;
+    }
+
+    .h-100 {
+      height: 100%;
     }
   </style>
 </head>
@@ -91,7 +113,9 @@
           <template v-if="state.tab === 'HOME'">
             <h1 class="md-display-1">ホーム</h1>
 
-            <div v-if="!state.initialized">
+            <div v-if="!state.initialized" class="centering-flex-container w-100" style="margin-top: 120px">
+              <md-progress-spinner :md-diameter="160" :md-stroke="12" md-mode="indeterminate">
+              </md-progress-spinner>
             </div>
 
             <md-empty-state v-else-if="nothingLogined" md-rounded :md-size="470" md-icon="devices_other"
@@ -100,38 +124,42 @@
             </md-empty-state>
 
             <div v-else>
-              <md-button @click="fetchAss()" :disabled="state.fetchingAss" class="md-raised md-primary ml-4">
-                <md-icon>refresh</md-icon> 課題一覧を再取得する
-              </md-button>
+              <div class="mx-4" style="display:flex; justify-content:space-between; align-items:center;">
+                <h2 class="md-headline mb-3">{{ assignments.length }}件の未提出課題</h2>
+                <md-button @click="fetchAss()" :disabled="state.fetchingAss" class="md-raised md-primary">
+                  <md-icon>refresh</md-icon> 課題一覧を再取得する
+                </md-button>
+              </div>
 
               <div class="" style="position:relative;">
                 <div v-if="state.fetchingAss" class="overlay-dark mx-4" style="width:calc(100% - 32px);">
-                  <div style="display:flex; justify-content:center; align-items:center; width:100%; height:100%;">
+                  <div class="centering-flex-container w-100 h-100">
                     <md-progress-spinner :md-diameter="120" :md-stroke="12" md-mode="indeterminate">
                     </md-progress-spinner>
                   </div>
                 </div>
 
-                <md-table v-model="assignments" md-sort="due" md-sort-order="asc" md-card md-fixed-header
-                  :md-height="700">
-                  <md-table-toolbar>
-                    <div class="md-toolbar-section-start">
-                      <h1 class="md-title">未提出課題リスト</h1>
-                    </div>
-                    <div class="md-toolbar-section-end">
-                    </div>
-                  </md-table-toolbar>
+                <md-table v-model="assignments" :md-sort.sync="sorting.key" :md-sort-order.sync="sorting.ord" md-card
+                  :md-sort-fn="sortAssignments" md-fixed-header :md-height="600">
 
                   <md-table-empty-state md-label="未提出の課題はありません🎉" md-description="未提出課題は0件です。お疲れ様でした！">
                   </md-table-empty-state>
 
                   <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="課題名">{{ item.title }}</md-table-cell>
+                    <md-table-cell md-label="課題名" md-sort-by="title">{{ item.title }}</md-table-cell>
                     <md-table-cell md-label="科目" md-sort-by="course">{{ item.course }}</md-table-cell>
-                    <md-table-cell md-label="締め切り" md-sort-by="due">{{ item.due }}</md-table-cell>
+                    <md-table-cell md-label="締め切り" md-sort-by="due">
+                      {{ fmtDue(item.due) }}
+                    </md-table-cell>
                     <md-table-cell md-label="提出先" md-sort-by="origin">{{ item.origin }}</md-table-cell>
                   </md-table-row>
                 </md-table>
+              </div>
+
+              <div>
+                <ul class="text-red">
+                  <li v-for="err in assErrors">{{ err.origin }} の課題取得でエラー: <strong>{{ err.message }}</strong></li>
+                </ul>
               </div>
             </div>
 
