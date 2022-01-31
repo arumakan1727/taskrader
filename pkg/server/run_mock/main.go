@@ -1,13 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
 	"github.com/arumakan1727/taskrader/pkg/assignment"
-	"github.com/arumakan1727/taskrader/pkg/clients/edstem"
-	"github.com/arumakan1727/taskrader/pkg/clients/gakujo"
-	"github.com/arumakan1727/taskrader/pkg/clients/teams"
 	"github.com/arumakan1727/taskrader/pkg/cred"
 	"github.com/arumakan1727/taskrader/pkg/server"
 	"github.com/gin-gonic/gin"
@@ -29,7 +27,7 @@ func main() {
 }
 
 func addDateHourMinune(date time.Time, day, hour, minue int) time.Time {
-	return date.Add(time.Duration(24 * day + hour) * time.Hour + time.Duration(minue) * time.Minute)
+	return date.Add(time.Duration(24*day+hour)*time.Hour + time.Duration(minue)*time.Minute)
 }
 
 func dummyFetchAssignments(auth *cred.Credential) ([]*assignment.Assignment, []*assignment.Error) {
@@ -103,21 +101,15 @@ func dummyFetchAssignments(auth *cred.Credential) ([]*assignment.Assignment, []*
 		errs = []*assignment.Error{
 			{
 				Origin: assignment.OrigGakujo,
-				Err:    &gakujo.ErrUsernameOrPasswdWrong{
-					Username: "test-username",
-				},
+				Err:    fmt.Errorf("password が空です"),
 			},
 			{
 				Origin: assignment.OrigEdStem,
-				Err:    &edstem.ErrEmailOrPasswdWrong{
-					Email: "test@example.com",
-				},
+				Err:    fmt.Errorf("password が空です"),
 			},
 			{
 				Origin: assignment.OrigTeams,
-				Err:    &teams.ErrEmailOrPasswdWrong{
-					Email: "test@example.com",
-				},
+				Err:    fmt.Errorf("password が空です"),
 			},
 		}
 	}
