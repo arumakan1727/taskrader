@@ -169,7 +169,7 @@ func resp500SimpleErrOr200EmptyErr(err error, c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, RespSimpleErr{Message: err.Error()})
 	} else {
-		c.JSON(http.StatusOK, RespSimpleErr{Message: err.Error()})
+		c.JSON(http.StatusOK, RespSimpleErr{Message: ""})
 	}
 }
 
