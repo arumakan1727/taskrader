@@ -9,11 +9,11 @@ $(BIN):	$(INDEX_MIN_HTML) $(MAIN_MIN_JS)
 	@mkdir -p $(dir $@)
 	go build -o $@ ./cmd/taskrader
 
-$(INDEX_MIN_HTML):	assets/index.html yarn.lock
+$(INDEX_MIN_HTML):	assets/index.html node_modules
 	yarn run html-minifier --minify-css --collapse-whitespace --remove-comments $< -o $@
 
-$(MAIN_MIN_JS):	assets/main.js yarn.lock
+$(MAIN_MIN_JS):	assets/main.js node_modules
 	yarn run uglifyjs $< -o $@
 
-yarn.lock:
-	yarn && touch $@
+node_modules:
+	yarn
