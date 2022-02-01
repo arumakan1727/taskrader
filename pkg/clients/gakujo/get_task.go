@@ -12,7 +12,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-var kadaiInfoRegex regexp.Regexp = *regexp.MustCompile(`^(\[未提出\])?\s*(.*) (.+)（.*クラス）\s*(前|後)期\s*$`)
+var kadaiInfoRegex regexp.Regexp = *regexp.MustCompile(`^(\[未提出\])?\s*(.*) (.+)（\S+）\s*(前|後)期\s*$`)
 
 func (c *Client) GetTask() ([]TaskRow, error) {
 
