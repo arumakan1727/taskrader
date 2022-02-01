@@ -72,7 +72,7 @@ func newLoginCmd() *cobra.Command {
 			}
 			target := strings.ToLower(args[0])
 			if err := interactiveLogin(target); err != nil {
-				fmt.Fprintln(os.Stderr, color.RedString("Error: %s", err))
+				fmt.Fprintln(os.Stderr, color.RedString("\nError: %s", err))
 				os.Exit(1)
 			}
 			printLoginStatus()
@@ -173,7 +173,7 @@ func interactiveLoginGakujo(t *term.Terminal) (*cred.Gakujo, error) {
 		return nil, err
 	}
 
-	fmt.Fprint(t, "入力された認証情報で学情へのログインを試みています...\n")
+	fmt.Fprint(t, "\n入力された認証情報で学情へのログインを試みています...\n")
 
 	err = gakujo.NewClient().Login(username, password)
 	if err != nil {
@@ -205,7 +205,7 @@ func interactiveLoginEdStem(t *term.Terminal) (*cred.EdStem, error) {
 		return nil, err
 	}
 
-	fmt.Fprint(t, "入力された認証情報で EdStem へのログインを試みています...\n")
+	fmt.Fprint(t, "\n入力された認証情報で EdStem へのログインを試みています...\n")
 
 	err = edstem.NewClient().Login(email, password)
 	if err != nil {
@@ -237,7 +237,7 @@ func interactiveLoginTeams(t *term.Terminal) (*cred.Teams, error) {
 		return nil, err
 	}
 
-	fmt.Fprint(t, "入力された認証情報で Teams へのログインを試みています...\n")
+	fmt.Fprint(t, "\n入力された認証情報で Teams へのログインを試みています...\n")
 
 	teams.ClearCookies()
 	err = teams.Login(email, password, log.New(io.Discard, "", 0))
