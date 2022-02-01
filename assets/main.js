@@ -105,6 +105,7 @@ const app = new Vue({
       this.state.tab = tabID;
     },
     fetchAss() {
+      if (this.state.fetchingAss) return;
       this.state.fetchingAss = true;
       return axios.get(API_ORIGIN + '/api/assignments')
         .then(resp => {
@@ -162,6 +163,7 @@ const app = new Vue({
             this.auth.gakujo.errmsg = resp.data.errmsg;
           } else {
             this.auth.gakujo.accepted = true;
+            if (this.assignments.length == 0) this.fetchAss();
           }
         })
         .finally(() => {
@@ -185,6 +187,7 @@ const app = new Vue({
             this.auth.edstem.errmsg = resp.data.errmsg;
           } else {
             this.auth.edstem.accepted = true;
+            if (this.assignments.length == 0) this.fetchAss();
           }
         })
         .finally(() => {
@@ -208,6 +211,7 @@ const app = new Vue({
             this.auth.teams.errmsg = resp.data.errmsg;
           } else {
             this.auth.teams.accepted = true;
+            if (this.assignments.length == 0) this.fetchAss();
           }
         })
         .finally(() => {
