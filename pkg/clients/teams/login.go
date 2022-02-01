@@ -35,7 +35,7 @@ func Login(email, password string, logger *log.Logger) error {
 	if err := page.Navigate(loginURL); err != nil {
 		return err
 	}
-	time.Sleep(time.Second)
+	time.Sleep(3 * time.Second)
 
 	{
 		url, err := page.URL()
