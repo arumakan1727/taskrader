@@ -3,11 +3,11 @@ BIN := $(BIN_DIR)/taskrader
 INDEX_MIN_HTML := ./assets/index.min.html
 MAIN_MIN_JS := ./assets/main.min.js
 
-all:	$(BIN)
+.PHONY:	build
 
-$(BIN):	$(INDEX_MIN_HTML) $(MAIN_MIN_JS)
-	@mkdir -p $(dir $@)
-	go build -o $@ ./cmd/taskrader
+build:	$(INDEX_MIN_HTML) $(MAIN_MIN_JS)
+	@mkdir -p $(BIN_DIR)
+	go build -o $(BIN) ./cmd/taskrader
 
 $(INDEX_MIN_HTML):	assets/index.html node_modules
 	yarn run html-minifier --minify-css --collapse-whitespace --remove-comments $< -o $@
