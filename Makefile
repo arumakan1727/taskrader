@@ -7,7 +7,7 @@ MAIN_MIN_JS := ./assets/main.min.js
 
 build:	$(INDEX_MIN_HTML) $(MAIN_MIN_JS)
 	@mkdir -p $(BIN_DIR)
-	go build -o $(BIN) ./cmd/taskrader
+	go build -o $(BIN) -ldflags='-s -w' ./cmd/taskrader
 
 $(INDEX_MIN_HTML):	assets/index.html node_modules
 	yarn run html-minifier --minify-css --collapse-whitespace --remove-comments $< -o $@
