@@ -50,9 +50,6 @@ func TestSaveAndLoad(t *testing.T) {
 		}
 	})
 
-	bytes, _ := ioutil.ReadFile(savePath)
-	t.Logf("content of %s: '%s'", savePath, string(bytes))
-
 	t.Run("LoadFromFile() should return credential which is equivalent to saved value", func(t *testing.T) {
 		got, err := cred.LoadFromFile(savePath)
 		if err != nil {
