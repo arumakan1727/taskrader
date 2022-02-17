@@ -18,10 +18,6 @@ import (
 )
 
 func newLoginCmd() *cobra.Command {
-	flags := struct {
-		status bool
-	}{}
-
 	credPath, _ := config.TaskraderCredentialPath()
 
 	loginCmd := &cobra.Command{
@@ -38,15 +34,8 @@ func newLoginCmd() *cobra.Command {
   $ taskrader login gakujo
 	-> 学情へログインするためのユーザ名とパスワードを対話形式で登録します。
 	   登録直後にログインを試行し、成功した場合は認証情報を暗号化して保存します。
-
-  $ taskrader login --status
-	-> 学情, EdStem, Teams それぞれについて認証情報が登録保存されているか表示します。
 `,
 		Args: func(cmd *cobra.Command, args []string) error {
-			// --status が指定された場合はエラーチェックしない
-			if flags.status {
-				return nil
-			}
 			if len(args) < 1 {
 				return fmt.Errorf("ログイン先 (%s) を指定してください", strings.Join(cmd.ValidArgs, "|"))
 			}
@@ -66,10 +55,6 @@ func newLoginCmd() *cobra.Command {
 		},
 
 		Run: func(cmd *cobra.Command, args []string) {
-			if flags.status {
-				printLoginStatus()
-				return
-			}
 			target := strings.ToLower(args[0])
 			if err := interactiveLogin(target); err != nil {
 				fmt.Fprintln(os.Stderr, color.RedString("\nError: %s", err))
@@ -79,40 +64,7 @@ func newLoginCmd() *cobra.Command {
 		},
 	}
 
-	loginCmd.Flags().BoolVarP(&flags.status, "status", "s", false, "認証情報の登録状況を表示します")
-
 	return loginCmd
-}
-
-func printLoginStatus() {
-	credPath, err := config.TaskraderCredentialPath()
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "Error: ", err)
-		os.Exit(1)
-	}
-
-	auth := cred.LoadFromFileOrEmpty(credPath)
-
-	printStatus := func(ok bool, param1, param2 string) {
-		if ok {
-			color.Green("[OK] %s と %s は登録済みです", param1, param2)
-		} else {
-			color.Red("[NG] %s と %s が未登録です", param1, param2)
-		}
-	}
-
-	fmt.Println("\n[現在のログイン状態]")
-	fmt.Println("-------------------------------------------------------")
-
-	fmt.Print(" 学情:   ")
-	printStatus(auth.Gakujo.Username != "" && auth.Gakujo.Password != "", "username", "password")
-
-	fmt.Print(" EdStem: ")
-	printStatus(auth.EdStem.Email != "" && auth.EdStem.Password != "", "email", "password")
-
-	fmt.Print(" Teams:  ")
-	printStatus(auth.Teams.Email != "" && auth.Teams.Password != "", "email", "password")
-
 }
 
 func interactiveLogin(target string) error {

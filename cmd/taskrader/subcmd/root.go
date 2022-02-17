@@ -44,6 +44,7 @@ TaskRader は学情・EdStem・Teamsのの課題情報を一括して取得す�
 func init() {
 	rootCmd.AddCommand(newListCmd())
 	rootCmd.AddCommand(newLoginCmd())
+	rootCmd.AddCommand(newStatusCmd())
 	rootCmd.AddCommand(newGuiCmd())
 }
 
