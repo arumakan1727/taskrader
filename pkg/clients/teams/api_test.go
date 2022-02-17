@@ -1,6 +1,7 @@
 package teams_test
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -81,9 +82,9 @@ func TestFetchAssignments(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("len(ass) = %d", len(ass))
+	fmt.Printf("len(ass) = %d", len(ass))
 	for i, a := range ass {
-		t.Logf("[%02d] title=%q\n  course=%q, deadline=%q\n", i+1, a.Title, a.Course, a.Deadline)
+		fmt.Printf("[%02d] title=%q\n  course=%q, deadline=%q\n", i+1, a.Title, a.Course, a.Deadline)
 		if a.Deadline.IsZero() {
 			t.Errorf("Deadline is zero; Probably failed to parse dueText")
 		}

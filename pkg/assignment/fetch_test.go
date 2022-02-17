@@ -1,6 +1,8 @@
 package assignment_test
 
 import (
+	"fmt"
+	"os"
 	"testing"
 
 	"github.com/arumakan1727/taskrader/pkg/assignment"
@@ -9,6 +11,11 @@ import (
 )
 
 func TestFetchAll(t *testing.T) {
+	if os.Getenv("NOW_ON_CI") != "" {
+		// CI の場合は本テスト関数は実行しない
+		return
+	}
+
 	_ = godotenv.Load("../../.env")
 
 	cred := cred.LoadFromEnv()
@@ -17,11 +24,11 @@ func TestFetchAll(t *testing.T) {
 	ass, errs := assignment.FetchAll(cred)
 
 	for i, a := range ass {
-		t.Logf("#%02d %s\n", i+1, a)
+		fmt.Printf("#%02d %s\n", i+1, a)
 	}
 
-	t.Logf("エラー: %d件\n", len(errs))
+	fmt.Printf("エラー: %d件\n", len(errs))
 	for _, e := range errs {
-		t.Logf("%s の課題取得でエラー: %s\n", e.Origin, e.Err)
+		fmt.Printf("%s の課題取得でエラー: %s\n", e.Origin, e.Err)
 	}
 }
